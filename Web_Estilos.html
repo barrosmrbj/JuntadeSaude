@@ -1,0 +1,724 @@
+<style>
+/* ============================================================
+      RESET E BASE
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Limita largura padrão do app para celular */
+body {
+    font-size: 16px;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 15px;
+    background-color: #f5f5f5;
+}
+
+input, select, button {
+    font-size: 18px !important; /* Fonte maior para facilitar o toque e visão */
+    height: 45px;               /* Altura boa para clicar com o dedo */
+}
+
+/* Container principal */
+.main-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 12px;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  color: #003366;
+  margin-bottom: 15px;
+}
+
+/* ============================================================
+      MENU SUPERIOR
+   ============================================================ */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  background: #004a99;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+nav button {
+  background: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+  color: #004a99;
+  font-weight: bold;
+  transition: 0.25s;
+}
+
+nav button:hover {
+  background: #dde8ff;
+}
+
+/* ============================================================
+      CONTAINER PRINCIPAL DO SPA
+   ============================================================ */
+#app {
+  margin-top: 20px;
+  padding: 15px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================================
+      CAMPOS E INPUTS
+   ============================================================ */
+.linha-campo {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.linha-campo label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #003366;
+}
+
+.linha-campo input,
+.linha-campo select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.linha-campo textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #888;
+  border-radius: 5px;
+  font-size: 15px;
+  resize: vertical;
+}
+
+/* mensagens de erro */
+.error-message {
+  color: red;
+  margin-top: 3px;
+  font-size: 13px;
+  min-height: 16px;
+}
+
+/* ============================================================
+      BOTÕES PADRÃO
+   ============================================================ */
+.area-botoes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.area-botoes button {
+  width: 100%;
+  padding: 10px 18px;
+  background: #0055cc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.area-botoes button:hover {
+  background: #003d99;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ajuste de textos para telas pequenas */
+label {
+    font-size: 15px;
+}
+
+/* ============================================================
+      RÓTULOS E TEXTO
+   ============================================================ */
+.titulo-centro {
+  text-align: center;
+  margin-bottom: 15px;
+}
+.titulo-centro h1 {
+  font-size: 18px;
+}
+
+
+.subtitulo {
+  margin-top: 12px;
+  font-weight: bold;
+  color: #003366;
+}
+
+/* ============================================================
+      RESPONSIVIDADE SIMPLES
+   ============================================================ */
+@media (max-width: 600px) {
+  nav button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+    .resultado-card {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 15px;
+        padding: 12px;
+    }
+
+    #stepIndicators {
+        font-size: 12px;
+    }
+
+    .titulo-centro h1 {
+        font-size: 16px;
+        text-align: center;
+    }
+}
+
+
+
+/* Container do wizard com animação ao entrar */
+#wizardContainer {
+  animation: fadeScaleIn 0.4s ease forwards;
+  transform-origin: top center;
+  opacity: 0;
+}
+
+/* Fade + scale na primeira aparição */
+@keyframes fadeScaleIn {
+  from { opacity: 0; transform: scale(.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ----------- ANIMAÇÃO DOS STEPS ----------- */
+.wizard-step {
+  display: none;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all .35s ease;
+  animation: fadeIn 0.3s ease-out;
+
+}
+
+.wizard-step.active-step {
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateX(0px) !important;
+}
+
+/* ----------- INDICADORES ANIMADOS ----------- */
+.step-ind {
+  transition: all .3s ease;
+}
+
+.step-ind.active {
+  opacity: 1 !important;
+  font-weight: 700;
+  transform: scale(1.1);
+}
+
+/* ----------- SPINNER PROFISSIONAL ----------- */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ccc;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ---------------------------------------
+   BOTÕES PADRÃO DO SISTEMA (GLOBAL)
+------------------------------------------ */
+
+.btn-sistema {
+    width: 100%;
+    background-color: #2d6cdf;
+    color: #fff;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.18);
+}
+
+.btn-sistema:hover {
+    background-color: #1f54b6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.25);
+}
+
+.btn-sistema:active {
+    transform: translateY(0);
+}
+
+/* Botão desabilitado */
+.btn-sistema:disabled {
+    background-color: #b0b8c5 !important;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+
+/* Botões secundários */
+.btn-secundario {
+    background-color: #636e72;
+}
+
+.btn-secundario:hover {
+    background-color: #4d5658;
+}
+
+/* Containers de botões do Wizard */
+.wizard-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* pequenos estilos locais ao wizard */
+.step-ind { margin-right:6px; opacity:0.6; }
+.step-ind.active { opacity:1; font-weight:700; }
+.wizard-step { margin-top:8px; }
+
+/* Indicadores compactos para celular */
+#stepIndicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+.step-ind {
+    padding: 4px 6px;
+    font-size: 13px;
+}
+
+.input-desabilitado {
+    background:#eee;
+    text-align:center;
+    font-weight:bold;
+}
+.grupo-container {
+  width: 100%;
+}
+/* garante que select não ultrapasse o container e seja responsivo */
+#selectGrupo {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 14px;
+}
+
+.finalidade-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+#finalidadeList {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 6px;
+    background: #fff;
+}
+
+
+
+/* CAIXA GERAL */
+.wizard-steps-container {
+    width: 100%;
+    margin: 25px 0 10px 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* ORGANIZAÇÃO */
+.step-indicators {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* BOLHAS */
+.step-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #dfe6e9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 17px;
+    transition: 0.3s;
+    color: #636e72;
+    border: 2px solid transparent;
+}
+
+/* TEXTO */
+.step-label {
+    font-size: 13px;
+    color: #636e72;
+    margin-top: 6px;
+}
+
+/* ITEM COMPLETO */
+.step-item {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.step-item:hover .step-circle {
+    transform: scale(1.08);
+    border-color: #0984e3;
+}
+
+/* LINHA ENTRE OS STEPS */
+.step-line {
+    width: 45px;
+    height: 3px;
+    background: linear-gradient(90deg, #b2bec3, #dfe6e9);
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+/* STEP ATIVO → AZUL */
+.step-item.active .step-circle {
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+    color: white;
+    border-color: #0984e3;
+    box-shadow: 0px 4px 10px rgba(9,132,227,0.35);
+}
+
+.step-item.active .step-label {
+    font-weight: bold;
+    color: #0984e3;
+}
+
+/* STEP COMPLETO → VERDE */
+.step-item.completed .step-circle {
+    background: linear-gradient(135deg, #00b894, #55efc4);
+    color: white;
+}
+
+.step-item.completed .step-label {
+    color: #00b894;
+    font-weight: bold;
+}
+
+/* LINHA COMPLETA */
+.step-line.completed {
+    background: linear-gradient(90deg, #00b894, #55efc4);
+}
+
+#statusMsg {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+
+/* MOBILE */
+@media(max-width: 650px){
+    .step-indicators {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    .step-line {
+        display: none;
+    }
+}
+
+/* Centralizar label + campo CPF juntos */
+.linha-campo-cpf {
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* centraliza horizontalmente */
+    text-align: center;        /* centraliza o texto do label */
+    width: 100%;
+}
+
+/* Campo de CPF centralizado */
+#CampoCPF {
+    text-align: center;        /* centraliza o texto digitado */
+    width: 240px;              /* tamanho ideal (ajuste se quiser) */
+    font-size: 18px;
+    padding: 8px;
+}
+
+/* Campo de CPF centralizado */
+.CampoCPF {
+    text-align: center;        /* centraliza o texto digitado */
+    width: 240px;              /* tamanho ideal (ajuste se quiser) */
+    font-size: 18px;
+    padding: 8px;
+}
+
+/* ==========================
+   MODAL — VISUAL PROFISSIONAL
+========================== */
+.modal-sistema {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    animation: fadeIn 0.3s ease;
+}
+/* ============================================================
+      MODAL: O container principal que cobre toda a tela
+   ============================================================ */
+.modal-overlay {
+    /* 1. Faz o overlay cobrir toda a viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* 2. Adiciona um fundo semi-transparente */
+    background-color: rgba(0, 0, 0, 0.5); 
+    
+    /* 3. Garante que fique acima de todo o conteúdo */
+    z-index: 1000;
+    
+    /* 4. Centraliza os itens (o modal-content) horizontal e verticalmente */
+    display: flex;
+    justify-content: center; /* Centraliza Horizontalmente */
+    align-items: center;     /* Centraliza Verticalmente */
+}
+/* ============================================================
+      MODAL: O conteúdo interno (caixa branca)
+   ============================================================ */
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    
+    /* Define uma largura máxima para não ficar muito grande em desktops */
+    max-width: 400px;
+    width: 90%; /* Ocupa 90% da largura do celular, mas no máximo 400px */
+    
+    /* (Opcional) Sombra para destacar o modal */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================================
+      BOTÕES (Opcional, para melhorar o alinhamento dos botões)
+   ============================================================ */
+.modal-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita (padrão para modais) */
+    gap: 10px;
+}
+
+/* Estilo básico para os botões dentro do modal, se necessário */
+.modal-buttons button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#btnCancelar {
+    background-color: #ccc;
+    color: #333;
+}
+#btnCadastrar {
+    background-color: #0055cc;
+    color: white;
+}
+
+@keyframes popup {
+    from { transform: scale(.8); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h2 {
+    margin-bottom: 12px;
+    color: #003366;
+}
+
+.modal-orientacao {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #444;
+    background: #eef4ff;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.modal-btn {
+    margin-top: 18px;
+    padding: 10px 22px;
+    background: #0055cc;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: .25s;
+}
+
+.modal-btn:hover {
+    background: #003f99;
+}
+
+/* Adicione esta regra */
+.lista-consentimento {
+    /* Restaura o recuo que foi removido pelo reset global */
+    padding-left: 40px; 
+    /* Garante que os marcadores da lista (o ponto) sejam visíveis */
+    list-style-type: disc; 
+    /* Adiciona um pequeno espaço acima da lista para separá-la da tag <p> anterior */
+    margin-top: 10px; 
+}
+
+.resultado-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto; /* evita quebrar layout em telas pequenas */
+}
+
+.resultado-table {
+  border: 1px solid #ddd;
+  width: 100%;
+  border-collapse: collapse; /* remove espaços entre células */
+  background-color: #fff;
+}
+
+.resultado-table th,
+.resultado-table td {
+  
+  padding: 8px 12px;
+  border: 1px solid #eee;
+  text-align: left;
+  background-color: #fff;
+}
+.resultado-container {
+  max-width: 900px; /* ← isso limita */
+}
+.resultado-table {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.resultado-table td:first-child {
+  width: 30%;
+  font-weight: bold;
+}
+
+/* Ajustando o campo que conversamos antes */
+#cod {
+  width: 100%;             /* Ocupa a largura total disponível */
+  font-size: 18px;         /* Fonte grande para leitura fácil */
+  padding: 12px;           /* Espaço interno para facilitar o toque */
+  background: transparent;
+  border: 1px solid #ccc;
+  text-align: right;
+  box-sizing: border-box;  /* Evita que o padding "estoure" a tela */
+  margin-bottom: 20px;
+}
+
+/* Botões grandes para o polegar */
+.botao-salvar {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Overlay de bloqueio total */
+.loading-overlay {
+  display: none; /* Escondido por padrão */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7); /* Fundo branco com transparência */
+  backdrop-filter: blur(3px); /* Efeito de desfoque no fundo */
+  z-index: 9999; /* Garante que fica por cima de tudo */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Spinner animado */
+.spinner-loader {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-family: sans-serif;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+
+</style>

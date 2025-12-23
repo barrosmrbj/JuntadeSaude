@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+
+    <!-- ============================
+         CSS GLOBAL
+       ============================ -->
+    <?!= include("Web_Estilos"); ?> 
+
+    <!-- ============================
+         SCRIPTS GLOBAIS (CPF, toast, etc.)
+       ============================ -->
+    <?!= include("Web_Scripts"); ?>    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+
+    <link rel="icon" sizes="192x192" href="ICON_URL.png">
+  </head>
+
+  <body>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-loader"></div>
+        <div id="loadingText" class="loading-text">Processando...</div>
+    </div>
+
+    <!-- ============================
+         MENU SUPERIOR
+       ============================ -->
+    <nav>
+        <button onclick="go('Dicas')">🏠 Início</button>
+        <button id="btnNav_Cadastro" onclick="go('Cadastro')" style="display:none">📝 Cadastro</button>
+        
+        <button onclick="go('Consulta')">🔍 Consulta</button>
+        <button onclick="go('Roteiro')">📋 Roteiro</button>
+    </nav>
+
+    <!-- ==========================================
+         ÁREA ONDE AS SUBPÁGINAS SERÃO CARREGADAS
+       ========================================== -->
+    <div id="app"></div>
+
+
+    <!-- ================================
+            MODAL UNIVERSAL DO SISTEMA
+    ================================ -->
+    <div id="modalSistema" class="modal-sistema">
+      <div class="modal-content">
+          <h2 id="modalTitulo">Título</h2>
+
+          <p id="modalMensagem"></p>
+          <div id="modalOrientacao" class="modal-orientacao"></div>
+
+          <button class="modal-btn" id="modalBtnOk">OK</button>
+
+      </div>
+    </div>
+    <!-- ==========================================
+         INJETANDO OS DADOS DO SERVIDOR (OM e GRUPOS)
+       ========================================== -->
+    <? var LIST = JSON.stringify(list); ?>
+    <? var GRUPOS = JSON.stringify(grupos); ?>
+    <? var FINALIDADES = JSON.stringify(finalidades); ?>
+
+ <script>
+/* ============================================================
+      VARIÁVEIS GLOBAIS DO APP (ACESSÍVEIS NAS SUBPÁGINAS)
+   ============================================================ */
+window.APP = window.APP || {};
+
+APP.OM_LIST = JSON.parse('<?= LIST ?>');
+APP.GRUPOS_LIST = JSON.parse('<?= GRUPOS ?>');
+APP.FINALIDADES_LIST = JSON.parse('<?= FINALIDADES ?>');
+
+/*
+    Acrescentar tambem 
+    POSTO
+    QUADRO
+    ESPECIALIDADE
+    OM
+    TP_SANG ----LISTA PROPRIA
+    COR ----LISTA PROPRIA
+    VINCULO ----LISTA PROPRIA ----------------- AERONAUTICA, BAVEX, DEPENDENTE, EMPRESA
+
+    CEP VERIFICAR SE TA PRA USAR API CORREIOS
+
+    SENHA ->> GERAR ****AUTOMATICAMENTE 
+*/
+
+window.__VIEW_CACHE = window.__VIEW_CACHE || {};      // cache em memória
+window.__VIEW_REGISTRY = window.__VIEW_REGISTRY || {}; // inits por view
+window.Store = window.Store || (function(){           // módulo simples (ver item 3)
+  let state = {};
+  const subscribers = new Map();
+  return {
+    get(k){ return state[k]; },
+    set(k,v){ state[k]=v; (subscribers.get(k)||[]).forEach(fn=>fn(v)); },
+    subscribe(k,fn){ (subscribers.get(k)||[]).push(fn); if(!subscribers.get(k)) subscribers.set(k, [fn]); },
+    reset(){ state = {}; subscribers.clear(); }
+  };
+})();
+
+
+
+/* ============================================================
+       LOADER SPA — FUNÇÃO PRINCIPAL DO SPA  - VERSÃO FINAL 
+   ============================================================ */
+
+   //router novo
+async function go(pageName, useHistory = true, extras = {}) {
+
+  try{
+    // cada view recebe um objeto exports para expor coisas (se necessário)
+    const exports = extras;   // <- permite enviar dados!
+    const app = document.getElementById("app");
+
+    /* ANTES DE TUDO: limpa handler anterior
+            SPA depende de window.onViewLoad, mas algumas páginas carregam antes do script ser injetado e antes do binding dos handlers.
+    */
+    //limpa quairsqeur Handlers antigoos
+    //console.log("SPA: Carregando pagina ",pageName);
+
+    // 🔥 remove qualquer handler antigo para evitar conflito
+    window.onViewLoad = null;
+
+    /* 1) usar cache em memória*/
+    let html = window.__VIEW_CACHE[pageName];
+    if (!html) {
+      html = await new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler(resolve)
+          .withFailureHandler(reject)
+          .include(pageName);
+      });
+      // opcional: gravar em localStorage para sessão persistente
+      window.__VIEW_CACHE[pageName] = html;
+    }
+
+
+    google.script.run
+      .withSuccessHandler(html => {    
+
+        // 🔥 Remove todo script antigo da página
+        app.querySelectorAll("script").forEach(s => s.remove());
+        //console.log("Remove todo script antigo da página");
+
+         // 2) inserir html (limpando scripts antigos)
+        app.innerHTML = html || "";
+        //console.log("insere o novo HTML");
+
+        // 🔥 coleta scripts inseridos via include
+        const foundScripts = Array.from(app.querySelectorAll("script"));
+        //console.log("coleta scripts inseridos via include");
+
+        // executa cada script corretamente
+
+
+        foundScripts.forEach(oldScript => {
+            // Tenta encontrar se esse script já foi injetado para evitar duplicidade
+            // ou apenas garanta que estamos limpando scripts de subpáginas anteriores
+            const scriptId = "script-view-" + pageName;
+            const existingScript = document.getElementById(scriptId);
+            if (existingScript) existingScript.remove();
+
+            const newScript = document.createElement("script");
+            newScript.id = scriptId; // Marca o script para saber de qual página ele é
+
+            // copiar o conteúdo
+            [...oldScript.attributes].forEach(a => newScript.setAttribute(a.name, a.value));
+            newScript.textContent = oldScript.textContent;
+            //console.log("copiar o conteúdo");
+
+            // remover script original do HTML
+            oldScript.remove();
+            //console.log("remover script original do HTML");
+
+            document.body.appendChild(newScript);
+            //console.log("injetar no body para executar o novoScript:");
+        });
+
+        /* 3) extrair scripts e executar com isolamento
+         -- scripts inline das views devem registrar init em window.__VIEW_REGISTRY[pageName]
+            Ex.: <script>window.__VIEW_REGISTRY['Consulta'] = function(exports,APP,Store){ ... }
+        */
+        const registryFn = window.__VIEW_REGISTRY[pageName];
+        if (typeof registryFn === 'function') {
+            //console.log("typeof registryFn === function"); 
+            // limpar listeners de view anterior: se sua view expuser cleanup, chamá-la:
+            if (window.__currentView && typeof window.__currentView.cleanup === 'function') {
+              //console.log("window.__currentView && typeof window.__currentView.cleanup === function"); 
+              try { window.__currentView.cleanup(); } catch(e){console.warn("WARNNNNN ",e);}
+            }
+            // executar init e salvar retorno se houver cleanup
+            const maybeCleanup = registryFn(exports, window.APP, window.Store);
+            window.__currentView = exports;
+            if (maybeCleanup && typeof maybeCleanup.cleanup === 'function') {
+              window.__currentView.cleanup = maybeCleanup.cleanup;
+            }
+          } else {
+            // fallback: tentar chamar window.onViewLoad se existir (compat. com seu código atual)
+            if (typeof window.onViewLoad === "function") {
+              try { window.onViewLoad(); } catch(e){ console.error("onViewLoad error:", e); }
+            }
+        }
+
+        //  🔥 Atualiza o histórico (somente visual)
+        if (useHistory) {
+          try {
+            //console.log("useHistory ------ corrigir: ",{ page: pageName }, "", "?page=" + pageName);
+            history.pushState({ page: pageName }, "", "?page=" + pageName);
+          } catch (e) {
+            //console.warn("Erro no history.pushState()", e);
+          }
+        }
+
+        /* // 🔥 após tudo carregado, chama o onViewLoad da página
+          aguarda DOM da subpágina -  loader do SPA só deve chamar onViewLoad() - após injetar os scripts da subpágina.*/
+        setTimeout(() => {
+          if (typeof window.onViewLoad === "function") {
+            try { window.onViewLoad(); }
+            catch (e) { console.error("Erro ao executar onViewLoad():", e); }
+          }
+        }, 50);
+      })
+      .withFailureHandler(err => {
+        document.getElementById("app").innerHTML =
+          `<p style="color:red;">Erro ao carregar página: ${err.message}</p>`;
+      })
+      .include(pageName);
+
+  } catch (err) {
+    document.getElementById("app").innerHTML = `<p style="color:red;">Erro ao carregar página: ${err.message}</p>`;
+    //console.error("async function go try {} ", err);
+  }
+}
+
+/* ============================================================
+      BOTÃO VOLTAR DO NAVEGADOR
+   ============================================================ */
+window.onpopstate = e => {
+    if (e.state && e.state.page) {
+        go(e.state.page, false);
+    }
+};
+
+/* ============================================================
+      CARREGAR A PRIMEIRA VIEW - A primeira Pagina
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(location.search);
+    const firstPage = params.get("page") || "Consulta";
+    go(firstPage, false);
+});
+</script>
+
+</body>
+</html>

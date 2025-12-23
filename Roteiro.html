@@ -1,0 +1,217 @@
+<div class="main-container">
+    <h2>Roteiro de Conferência</h2>
+
+    <p style="text-align:center;margin-bottom:12px;">
+        Selecione os setores onde o(a) inspecionando(a) já passou:
+    </p>
+
+    <div id="listaRoteiro" class="roteiro-grid"></div>
+    <p style="text-align:center">
+      --------------------------------------------------------
+    </p>
+    <button class="btn-sistema" id="finalizarRoteiro" style="margin-top:20px;">Finalizar Roteiro</button>
+
+    <div id="msgFinalizar" style="
+        display:none;
+        margin-top:15px;
+        padding:12px;
+        background:#e8f5e9;
+        border-left:4px solid #2ecc71;
+        border-radius:6px;
+        font-size:15px;
+        text-align:center;
+        animation: fadeIn .4s;">
+        Que bom, sua inspeção está próxima de terminar.<br>
+        Verifique com o militar responsável se a inspeção realmente foi concluída<br>
+        ou se ainda há pendências.<br><br>
+        Agradecemos pelo uso de nosso sistema!
+    </div>
+
+    <!-- INCLUIR tambem a parte da DECLARAÇÃO e PENDENCIAS NAS CLINICAS -->
+
+</div>
+
+<script>
+
+window.__VIEW_REGISTRY = window.__VIEW_REGISTRY || {};
+
+window.__VIEW_REGISTRY['Roteiro'] = function(exports, APP, Store){
+  console.log("📌 Roteiro carregado. Page Roteiro: onViewLoad()");
+  // liga botões iniciais
+  carregarRoteiro();
+  document.getElementById("finalizarRoteiro").onclick = finalizarRoteiro;
+
+};
+
+
+/* ===========================================================
+      MONTAR ROTEIRO EM 2 COLUNAS (ATM STYLE)
+   =========================================================== */
+function carregarRoteiro() {
+
+    if (!window.CURRENT_DATA) {
+        document.getElementById("listaRoteiro").innerHTML =
+            "<p>Não há dados para montar o roteiro.</p>";
+        return;
+    }
+
+    const sexo = (CURRENT_DATA.sexo || "").toUpperCase();
+    const finalidades = CURRENT_DATA.finalidades || Array.from(selectedFinalidades);
+
+    // Base fixa
+    const setoresFixos = [
+        "LABORATÓRIO",
+        "COPA",
+        "RAIO-X",
+        "ODONTOLOGIA",
+        "AUDIOMETRIA",
+        "OTORRINO",
+        "OFTALMOLOGIA",
+        "CLÍNICA MÉDICA",
+        "NEUROLOGIA",
+        "PSIQUIATRIA"
+    ];
+
+    const setores = [...setoresFixos];
+
+    // Condicionais
+    const habilitaGineco = sexo === "F";
+    const habilitaClinicaEspecifica = finalidades.some(f => f.startsWith("G"));
+
+    setores.push("GINECOLOGIA");
+    setores.push("CLÍNICA ESPECÍFICA (Ortopedia, Cirurgia Geral, Dermatologia e outras)");
+
+    // Montagem visual
+    let html = "";
+
+    setores.forEach(item => {
+        let habilitado = true;
+
+        if (item === "GINECOLOGIA" && !habilitaGineco) habilitado = false;
+        if (item === "CLÍNICA ESPECÍFICA" && !habilitaClinicaEspecifica) habilitado = false;
+
+        html += `
+            <div class="roteiro-item ${habilitado ? "" : "desabilitado"}"
+                 onclick="toggleRoteiroItem(this, '${item}', ${habilitado})">
+
+                <input type="checkbox"
+                       class="chkRoteiro"
+                       value="${item}"
+                       ${habilitado ? "" : "disabled"}
+                >
+                <span class="rot-label ${habilitado ? "" : "tachado"}">${item}</span>
+            </div>
+        `;
+    });
+
+    document.getElementById("listaRoteiro").innerHTML = html;
+}
+
+/* ============================================================
+   SELEÇÃO INTELIGENTE — clica na caixa inteira
+============================================================= */
+function toggleRoteiroItem(div, item, habilitado) {
+
+    if (!habilitado) return; // ignora bloqueados
+
+    const chk = div.querySelector("input");
+
+    chk.checked = !chk.checked;
+
+    div.classList.toggle("ativo", chk.checked);
+}
+
+/* ============================================================
+   FINALIZAR ROTEIRO
+============================================================= */
+function finalizarRoteiro() {
+    console.log("finalizarRoteiro");
+
+    const marcados = [...document.querySelectorAll(".chkRoteiro:checked")]
+        .map(c => c.value);
+
+    console.log("Setores marcados:", marcados);
+
+    // Mostra mensagem abaixo do botão
+    const msg = document.getElementById("msgFinalizar");
+    msg.style.display = "block";
+
+    setTimeout(() => {
+        msg.style.opacity = "1";
+        msg.style.transform = "translateY(0)";
+    }, 30);
+
+    // Se quiser depois salvar no banco → fazer aqui
+}
+
+
+</script>
+
+<style>
+        /* GRID EM 2 COLUNAS */
+        .roteiro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ITEM ESTILO "CAIXA ELETRÔNICO" */
+        .roteiro-item {
+            padding: 14px;
+            background: #ffffff;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+        }
+
+        /* Ativo */
+        .roteiro-item.ativo {
+            border-color: #2d6cdf;
+            background: #ecf5ff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            transform: scale(1.02);
+        }
+
+        /* Texto ----------------------------------------------- verificar se tirar*/
+        .rot-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* TACHADO */
+        .tachado {
+            text-decoration: line-through;
+            color: #777 !important;
+        }
+
+        /* DESABILITADOS */
+        .desabilitado {
+            background: #f2f2f2;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .desabilitado .rot-label {
+            color: #888;
+        }
+
+        /* Checkbox escondido – usa clique no container */
+        .chkRoteiro {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Transição da mensagem */
+        #msgFinalizar {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: 0.4s ease;
+        }
+</style>
