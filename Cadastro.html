@@ -220,6 +220,7 @@
     function gerarCamposEspecificos(v) {
         const container = document.getElementById("campoVinculo");
         container.innerHTML = ""; // Limpa
+        carregarListasDoGAS();
         
         let html = `<div class="grupo-campos"><h3>Dados de ${v}</h3>`;
         
