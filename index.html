@@ -118,13 +118,13 @@
                         ${res.data.nome}<br>
                         <small>Posto/Grad/Cat: ${res.data.posto} ${res.data.quadro} ${res.data.especialidade} </small><br>
                         <small>Data_Nasc: ${res.data.nascimento} Saram: ${res.data.saram}</small>
-                        <button class="btn btn-sm btn-success d-block w-100 mt-3" onclick="window.location.href='roteiro.html'">Iniciar Ficha de Inspeção</button>
+                        <button class="btn btn-sm btn-success d-block w-100 mt-3" onclick="window.location.href='Roteiro.html'">Iniciar Ficha de Inspeção</button>
                     </div>`;
             } else {
                 document.getElementById('resultado').innerHTML = `
                     <div class="alert alert-warning shadow-sm">
                         Inspecionando não encontrado no banco de dados.<br>
-                        <button class="btn btn-sm btn-primary mt-2" onclick="window.location.href='cadastro.html?cpf='+document.getElementById('cpfInput').value">Cadastrar Novo</button>
+                        <button class="btn btn-sm btn-primary mt-2" onclick="window.location.href='Cadastro.html?cpf='+document.getElementById('cpfInput').value">Cadastrar Novo</button>
                     </div>`;
             }
         } catch (error) {
