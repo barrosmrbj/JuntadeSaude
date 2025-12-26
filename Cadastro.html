@@ -1,766 +1,198 @@
-<!-- pages/Cadastro.html -->
-<h2>Cadastro do Inspecionando</h2>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - JUNTA DE SAÚDE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; padding: 20px; font-family: sans-serif; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        
+        /* Estilos originais que você enviou */
+        .grupo-campos { border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-top: 25px; margin-bottom: 25px; background-color: #f9f9f9; }
+        .grupo-campos h3 { border-bottom: 2px solid #0056b3; padding-bottom: 5px; color: #0056b3; }
+        .linha-campo { margin-bottom: 15px; display: flex; flex-direction: column; }
+        .linha-campo label { font-weight: bold; margin-bottom: 5px; }
+        input, select { text-align: center; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+        
+        /* Botões com efeito 3D (do seu código original) */
+        .grupo-status-botoes { display: flex; gap: 10px; flex-wrap: wrap; }
+        .grupo-status-botoes button { 
+            min-width: 100px; flex: 1 1 0; padding: 10px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;
+            background-color: #f0f8ff; color: #0056b3; box-shadow: 0 4px 0 0 #0056b3; transition: all 0.2s;
+        }
+        .grupo-status-botoes button:hover { background-color: #007bff; color: white; transform: translateY(-2px); }
+        .grupo-status-botoes button.ativo { background-color: #28a745; color: white; box-shadow: 0 0 0 0 #218838; transform: translateY(4px); }
+        
+        .invalido { border: 2px solid red !important; }
+        .valido { border: 2px solid green !important; }
+    </style>
+</head>
+<body>
 
+<div id="loader" class="loading-overlay"><div class="spinner-border text-primary"></div></div>
 
-<!-- CPF -->
-<div class="linha-campo linha-campo-cpf">
-  <label for="cadCPF">CPF</label>
-  <input class="CampoCPF" id="cadCPF" type="text" maxlength="11" readonly>
+<div class="container" style="max-width: 800px;">
+    <h2>Cadastro do Inspecionando</h2>
+
+    <div class="linha-campo">
+        <label for="cadCPF">CPF</label>
+        <input id="cadCPF" type="text" maxlength="11" readonly style="background-color: #eee;">
+    </div>
+
+    <p>Complete os dados abaixo para prosseguir.</p>
+
+    <div class="linha-campo">
+        <label>VÍNCULO <small><i>(Selecione uma opção)</i></small></label>
+        <div id="btnVinculo" class="grupo-status-botoes">
+            <button type="button" data-v="AERONAUTICA">AERONAUTICA</button>
+            <button type="button" data-v="DEPENDENTE">DEPENDENTE</button>
+            <button type="button" data-v="PENSIONISTAS">PENSIONISTAS</button>
+            <button type="button" data-v="EXERCITO">EXERCITO</button>
+            <button type="button" data-v="EMPRESA">EMPRESA</button>
+            <button type="button" data-v="CANDIDATOS">CANDIDATOS</button>
+        </div>
+    </div>
+
+    <div id="campoComum" style="display:none;" class="grupo-campos">
+        <h3>Dados Pessoais</h3>
+        <div class="linha-campo">
+            <label for="cadNome">Nome completo</label>
+            <input id="cadNome" type="text" placeholder="NOME COMPLETO">
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 linha-campo">
+                <label for="cadRG">Identidade</label>
+                <input id="cadRG" type="text">
+            </div>
+            <div class="col-md-6 linha-campo">
+                <label for="cadORGAO">Orgão Emissor</label>
+                <input type="text" id="cadORGAO" list="listaORGAOS">
+                <datalist id="listaORGAOS">
+                    <option value="COMAER">Comando da Aeronáutica</option>
+                    <option value="SSP">SSP</option>
+                    <option value="EB">Exército Brasileiro</option>
+                </datalist>
+            </div>
+        </div>
+
+        <div class="linha-campo">
+            <label for="cadDtNascimento">Data de Nascimento</label>
+            <input id="cadDtNascimento" type="date">
+        </div>
+
+        <div class="linha-campo">
+            <label for="cadEmail">E-mail</label>
+            <input id="cadEmail" type="email" placeholder="exemplo@dominio.com" oninput="validarEmail(this)">
+        </div>
+        
+        <div class="linha-campo">
+            <label for="cadTelefone">Telefone</label>
+            <input id="cadTelefone" type="text" placeholder="(92) 99999-9999">
+        </div>
+    </div>
+
+    <div id="campoVinculo"></div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <button class="btn btn-secondary px-4" onclick="window.location.href='index.html'">Voltar</button>
+        <button id="btnSalvar" class="btn btn-primary px-4">Cadastrar Inspecionando</button>
+    </div>
 </div>
 
-<p >Complete os dados abaixo para prosseguir...</p>
-<br>
-<!-- VÍNCULO -->
-<div class="linha-campo">
-  <label>VÍNCULO </label><small class="texto-ajuda" ><i>Selecione apenas uma opção<i></small>
-  <div id="btnVinculo" class="grupo-status-botoes">
-    <button data-v="AERONAUTICA">AERONAUTICA</button>
-    <button data-v="DEPENDENTE">DEPENDENTE</button>
-    <button data-v="DEPENDENTE">PENSIONISTAS</button>
-    <button data-v="EXERCITO">EXERCITO</button>
-    <button data-v="EMPRESA">EMPRESA</button>
-    <button data-v="CANDIDATOS">CANDIDATOS</button>
-  </div>
-  
-</div>
+<footer class="text-center mt-5 p-3 text-muted border-top">
+    Copyright © 2025 Developed by Sgt Barros - Junta de Saúde do HAMN.
+</footer>
 
-<!-- CAMPOS COMUNS -->
-<div class="grupo-campos" id="campoComum" style="display:none;">
-
-  <!-- ID -->
-  <input id="cod" class="input-transparente" type="text" maxlength="12" readonly 
-      style="font-size: 12px; background: transparent; border: none; text-align: right; opacity: 0.2; outline: none;">
-  
-
-  <h3>Dados Pessoais</h3>
-
-  <div class="linha-campo">
-    <label for="cadNome">Nome completo</label>
-    <input id="cadNome" type="text">
-  </div>
-
-  <div class="linha-campos-dupla">
-      <div class="linha-campo campo-metade">
-          <label for="cadRG">Identidade</label>
-          <input id="cadRG" type="text">
-      </div>
-      <div class="linha-campo campo-metade">
-          <label for="cadORGAO">Orgão EMISSOR</label>
-          <input type="text" id="cadORGAO" list="listaORGAOS" class="form-control" placeholder="Selecione ou digite...">
-          
-          <datalist id="listaORGAOS">
-              <option value="COMAER">Comando da Aeronáutica</option>
-              <option value="SSP">Sec. Seg Pública - SSP</option>
-              <option value="EXERCITO">Exército Brasileiro</option>
-              <option value="MARINHA">Marinha Brasileira</option>
-          </datalist>
-      </div>
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadDtNascimento">Data de Nascimento</label>
-    <input id="cadDtNascimento" type="date">
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadNaturalidade">Naturalidade</label>
-    <select id = "cadNaturalidade"  type="text">
-      <option disabled selected>Selecione o estado</option>
-      <option value="AC">Acre</option>
-      <option value="AL">Alagoas</option>
-      <option value="AP">Amapá</option>
-      <option value="AM">Amazonas</option>
-      <option value="BA">Bahia</option>
-      <option value="CE">Ceará</option>
-      <option value="DF">Distrito Federal</option>
-      <option value="ES">Espírito Santo</option>
-      <option value="GO">Goiás</option>
-      <option value="MA">Maranhão</option>
-      <option value="MT">Mato Grosso</option>
-      <option value="MS">Mato Grosso do Sul</option>
-      <option value="MG">Minas Gerais</option>
-      <option value="PA">Pará</option>
-      <option value="PB">Paraíba</option>
-      <option value="PR">Paraná</option>
-      <option value="PE">Pernambuco</option>
-      <option value="PI">Piauí</option>
-      <option value="RJ">Rio de Janeiro</option>
-      <option value="RN">Rio Grande do Norte</option>
-      <option value="RS">Rio Grande do Sul</option>
-      <option value="RO">Rondônia</option>
-      <option value="RR">Roraima</option>
-      <option value="SC">Santa Catarina</option>
-      <option value="SP">São Paulo</option>
-      <option value="SE">Sergipe</option>
-      <option value="TO">Tocantins</option>
-    </select>
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadSexo">Sexo</label>
-    <select id="cadSexo">
-      <option value="">-- selecione --</option>
-      <option value="MASC">Masculino</option>
-      <option value="FEM">Feminino</option>
-    </select>
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadEmail">E-mail</label>
-    <input 
-      id="cadEmail" 
-      type="email" 
-      placeholder="exemplo@dominio.com.br" 
-      oninput="validarEmailAoDigitar(this)" 
-      required
-    >
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadEndereco">Endereço (Rua/Av - N° Casa - Bairro - Estado)</label>
-    <input id="cadEndereco" type="text">
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadTelefone">Telefone </label>
-    <input id="cadTelefone" type="text">
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadTpSang">Tipo Sanguíneo</label>
-    <select id="cadTpSang" name="fatorsanguineo">
-        <option value="" disabled selected>--- Selecione ---</option>
-        <option value="A+">A+ (A Positivo)</option>
-        <option value="A-">A- (A Negativo)</option>
-        <option value="B+">B+ (B Positivo)</option>
-        <option value="B-">B- (B Negativo)</option>
-        <option value="AB+">AB+ (AB Positivo)</option>
-        <option value="AB-">AB- (AB Negativo)</option>
-        <option value="O+">O+ (O Positivo)</option>
-        <option value="O-">O- (O Negativo)</option>
-        <option value="NAO-SEI">Não sei</option>
-    </select>
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadCor">Cor</label>
-    <select id="cadCor" name="Cor">
-      <option value="" disabled selected>--- Selecione ---</option>
-      <option value="BRANCA">BRANCA</option>
-      <option value="PRETA">PRETA</option>
-      <option value="PARDA">PARDA</option>
-      <option value="AMARELA">AMARELA</option>
-      <option value="INDIGENA">INDIGENA</option>
-    </select>   
-  </div>
-
-  <div class="linha-campo">
-    <label for="cadNacionalidade">Nacionalidade</label>
-    <input id="cadNacionalidade" type="text" value="BRASILEIRA" readonly>
-  </div>
-</div>
-
-  <!-- CAMPOS ESPECÍFICOS -->
-  <div class="grupo-campos" id="campoVinculo"></div>
-
-  <div class="area-botoes">
-    <button class="btn-voltar" onclick="go('Consulta')">Voltar</button>
-    <button id="btnSalvar" class="btn-primario">Cadastrar Inspecionando</button>
-  </div>
-
-  <datalist id="om-list"></datalist>
-  <datalist id="grupo-list"></datalist>
 <script>
-/* =========================================================
-   VIEW: CADASTRO
-========================================================= */
-window.__VIEW_REGISTRY = window.__VIEW_REGISTRY || {};
+    const API_URL = "SUA_URL_DO_GAS_AQUI";
+    let vinculoSelecionado = "";
 
-window.__VIEW_REGISTRY['Cadastro'] = function (exports, APP, Store) {
-
-  let vinculoAtual = null;
-  let codControle = null; // RENOMEADO para refletir o uso apenas do COD
-  let modoOperacao = "CADASTRAR"; // NOVO: CADASTRAR ou EDITAR
-
-  /* NOVO: Função para popular os datalists */
-  function popularDatalists() {
-      // Gera as OPTIONS para OM
-      const omListElement = document.getElementById('om-list');
-      if (omListElement && window.APP.OM_LIST) {
-          let htmlOptions = window.APP.OM_LIST.map(item => `<option value="${item}">`).join('');
-          omListElement.innerHTML = htmlOptions;
-      }
-
-      // Gera as OPTIONS para GRUPO
-      const grupoListElement = document.getElementById('grupo-list');
-      if (grupoListElement && window.APP.GRUPOS_LIST) {
-          let htmlOptions = window.APP.GRUPOS_LIST.map(item => `<option value="${item}">`).join('');
-          grupoListElement.innerHTML = htmlOptions;
-      }
-  }
-
-  /* ---------------- INIT: Lógica de Edição ---------------- */
-  const dadosEdicao = Store.get("dadosEdicao");
-  const modoDaStore = Store.get("modoCadastro");
-  const cpf = Store.get("cpfCadastro");
-
-  // 1. Define o modo de operação
-  if (modoDaStore === "EDITAR" && dadosEdicao) {
-      modoOperacao = "EDITAR";
-      // Usa SOMENTE o cod para identificação
-      codControle = dadosEdicao.cod;
-  }
-
-  // 2. Limpa a store após obter os dados
-  Store.set("cpfCadastro", null);
-  Store.set("dadosEdicao", null);
-  Store.set("modoCadastro", null);
-
-  // 3. Popula o CPF (seja para cadastro ou edição)
-  document.getElementById("cadCPF").value = dadosEdicao?.cpf || cpf || '';
-
-  // 4. Se for Edição, pré-preenche a tela
-  if (modoOperacao === "EDITAR") {
-      document.querySelector('h2').textContent = "Edição de Cadastro";
-      document.getElementById("btnSalvar").textContent = "Salvar Edição";
-      
-      preencherCampos(dadosEdicao);
-
-      esconderCarregando();
-
-  } else {
-      // Modo CADASTRAR
-      document.querySelector('h2').textContent = "Cadastro do Inspecionando";
-  }
-
-  popularDatalists(); // <-- CHAME A FUNÇÃO AQUI NO INÍCIO!
-  bind();
-
-  // Funções de pré-preenchimento
-  function preencherCampos(data) {
-      console.log("Modo Edição ativado. COD:", codControle);
-
-      // ------------------------------------------
-      // Pré-preenchimento dos Campos Comuns
-      // ------------------------------------------
-      document.getElementById("cod").value = data.cod || '';
-
-
-      document.getElementById("cadNome").value = data.nome || '';
-      document.getElementById("cadRG").value = data.rg || '';
-      document.getElementById("cadORGAO").value = data.orgao || '';
-      
-      // Converte a data de DD/MM/AAAA (do GAS) para AAAA-MM-DD (do input type="date")
-      if (data.nascimento && data.nascimento.includes('/')) {
-          document.getElementById("cadDtNascimento").value = data.nascimento.split('/').reverse().join('-');
-      } else {
-          document.getElementById("cadDtNascimento").value = data.nascimento || '';
-      }
-      
-      document.getElementById("cadNaturalidade").value = data.naturalidade || '';
-      document.getElementById("cadSexo").value = data.sexo || '';
-      document.getElementById("cadEmail").value = data.email || '';
-      document.getElementById("cadEndereco").value = data.endereco || '';
-      document.getElementById("cadTelefone").value = data.telefone || '';
-      document.getElementById("cadTpSang").value = data.tp_sang || '';
-      document.getElementById("cadCor").value = data.cor || '';
-      
-      // ------------------------------------------
-      // Pré-preenchimento dos Campos de Vínculo
-      // ------------------------------------------
-      const vinculoParaSelecionar = data.vinculo?.toUpperCase();
-      if (vinculoParaSelecionar) {
-          const btnVinculo = document.querySelector(`#btnVinculo button[data-v="${vinculoParaSelecionar}"]`);
-          if (btnVinculo) {
-              // Seleciona o vínculo (isso chamará gerarCamposVinculo e injetará o HTML)
-              selecionarVinculo(btnVinculo);
-              
-              // Os campos específicos do vínculo só existem no DOM após selecionarVinculo()
-              // Por isso, populamos o restante AQUI (após a seleção)
-              setTimeout(() => {
-                  document.getElementById("cadSaram") && (document.getElementById("cadSaram").value = data.saram || '');
-                  document.getElementById("cadOM") && (document.getElementById("cadOM").value = data.om || '');
-                  document.getElementById("cadPosto") && (document.getElementById("cadPosto").value = data.posto || '');
-                  document.getElementById("cadQuadro") && (document.getElementById("cadQuadro").value = data.quadro || '');
-                  document.getElementById("cadEspecialidade") && (document.getElementById("cadEspecialidade").value = data.especialidade || '');
-                  document.getElementById("cadGrupo") && (document.getElementById("cadGrupo").value = data.grupo || '');
-                  
-                  // Lógica adicional para validação do email
-                  const cadEmail = document.getElementById('cadEmail');
-                  if (cadEmail) validarEmailAoDigitarLocal(cadEmail);
-
-              }, 50); // Pequeno delay para garantir que o DOM foi atualizado
-          }
-      }
-  } //fim da função preencherCampos(data)  
-
-  function bind() {
-    document.querySelectorAll("#btnVinculo button").forEach(btn => {
-      btn.onclick = () => selecionarVinculo(btn);
-    });
-
-    document.getElementById("btnSalvar").onclick = salvarCadastro;
-  }
-
-  /* NOVO: Função de Validação em Tempo Real */
-  function validarEmailAoDigitarLocal(inputElement) {
-    const email = inputElement.value;
-    
-    // Regex rigoroso para checar o formato geral (Nome@Dominio.Extensao)
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,6}$/; 
-    
-    // 1. Limpa classes se o campo estiver vazio
-    if (email.trim() === "") {
-        inputElement.classList.remove('invalido', 'valido');
-        return;
-    }
-
-    // 2. Testa o formato
-    if (regexEmail.test(email)) {
-        inputElement.classList.remove('invalido');
-        inputElement.classList.add('valido'); 
-    } else {
-        inputElement.classList.remove('valido');
-        inputElement.classList.add('invalido');
-    }
-  }
-
-  // 💡 PASSO CRUCIAL: Expor a função para o escopo global
-  // Isso garante que o oninput do HTML consiga chamá-la.
-  window.validarEmailAoDigitar = validarEmailAoDigitarLocal;
-
-  function selecionarVinculo(btn) {
-    vinculoAtual = btn.dataset.v;
-
-    // feedback visual
-    document.querySelectorAll("#btnVinculo button")
-      .forEach(b => b.classList.remove("ativo"));
-    btn.classList.add("ativo");
-
-    document.getElementById("campoComum").style.display = "block";
-    document.getElementById("campoVinculo").innerHTML =
-      gerarCamposVinculo(vinculoAtual);
-  }
-
-  function gerarCamposVinculo(v) {
-    if (v === "DEPENDENTE") {
-      return `
-        <h3>Dados do Dependente</h3>
-        <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="VA - DEP MIL / PENSIONISTAS" style="text-align: center" readonly></div>
-        <div class="linha-campo"><label>Posto</label><input id="cadPosto" value="Dependente" style="text-align: center" readonly></div>
-        <div class="linha-campo"><label>SARAM do Responsável (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
-      `;
-    }
-
-    if (v === "PENSIONISTA") {
-      return `
-        <h3>Dados do Pensionista</h3>
-        <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="VA - DEP MIL / PENSIONISTAS" style="text-align: center" readonly></div>
-        <div class="linha-campo"><label>Posto</label><input id="cadPosto" value="Pensionista" style="text-align: center" readonly></div>
-        <div class="linha-campo"><label>SARAM do Responsável (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
-      `;
-    }
-
-    if (v === "CONCURSO") {
-      return `
-        <h3>Dados do Civil</h3>
-        <div class="linha-campo"> <label for="cadOM">OM VÍCULO</label> <input id="cadOM" value="SEREP-MN" style="text-align: center" readonly> </div>
-        <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="VB - CIVIS (CONCURSO)" style="text-align: center" readonly></div>
-        <div class="linha-campo"><label>Posto</label>
-            <select id="cadPosto" style="text-align: center">
-                <option value="" disabled selected>--- Selecione ---</option>
-                <option value="CANDIDATO">CANDIDATO</option>
-                <option value="RECRUTA">RECRUTA</option>
-            </select>
-        </div>
-        <div class="linha-campo"><label>Quadro</label><input id="cadQuadro" style="text-align: center"></div>
-        <div class="linha-campo"><label>Especialidade</label><input id="cadEspecialidade" style="text-align: center"></div>
-      `;
-    }
-
-    if (v === "AERONAUTICA") {
-      return `
-        <h3>Dados Militares</h3>
-        <div class="linha-campo"> 
-            <label for="cadOM">Organização Militar</label> 
-            <input 
-                id="cadOM" 
-                type="text" 
-                list="om-list" 
-                style="text-align: center"
-            > 
-        </div>        
-        <div class="linha-campo"><label>SARAM / Numero de Ordem (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
-        <div class="linha-campos-dupla">
-              <div class="linha-campo campo-metade"><label>Posto</label><input id="cadPosto" style="text-align: center"></div>
-              <div class="linha-campo campo-metade"><label>Quadro</label><input id="cadQuadro" style="text-align: center"></div>
-              <div class="linha-campo campo-metade"><label>Especialidade</label><input id="cadEspecialidade" style="text-align: center"></div>
-        </div>
-        <div class="linha-campo">
-            <label>Indique o seu GRUPO atual</label>
-            <input 
-                id="cadGrupo" 
-                type="text" 
-                list="grupo-list" 
-                style="text-align: center"
-            >
-        </div>
+    // 1. Inicialização
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const cpf = urlParams.get('cpf');
+        if (cpf) document.getElementById('cadCPF').value = cpf;
         
-      `;
+        configurarBotoesVinculo();
+        document.getElementById("btnSalvar").onclick = salvar;
+    };
+
+    function configurarBotoesVinculo() {
+        document.querySelectorAll("#btnVinculo button").forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll("#btnVinculo button").forEach(b => b.classList.remove("ativo"));
+                btn.classList.add("ativo");
+                vinculoSelecionado = btn.dataset.v;
+                document.getElementById("campoComum").style.display = "block";
+                gerarCamposEspecificos(vinculoSelecionado);
+            };
+        });
     }
-    if (v === "EXERCITO") {
-      return `
-        <h3>Dados Militares</h3>
-        <div class="linha-campo"> 
-            <label for="cadOM">Organização Militar</label> 
-            <input 
-                id="cadOM" 
-                type="text" 
-                list="om-list" 
-                style="text-align: center"
-            > 
-        </div>      
-        <div class="linha-campos-dupla">
-              <div class="linha-campo campo-metade"><label>Posto</label><input id="cadPosto" style="text-align: center"></div>
-              <div class="linha-campo campo-metade"><label>Especialidade</label><input id="cadEspecialidade" style="text-align: center"></div>
-        </div>
-        <div class="linha-campo">
-            <label>Indique o seu GRUPO atual</label>
-            <input 
-                id="cadGrupo" 
-                type="text" 
-                list="grupo-list" 
-                style="text-align: center"
-            >
-        </div>
+
+    function gerarCamposEspecificos(v) {
+        const container = document.getElementById("campoVinculo");
+        container.innerHTML = ""; // Limpa
         
-      `;
-    }    
-
-    if (v === "EMPRESA") {
-      return `
-          <h3>Dados da Empresa</h3>
-          <div class="linha-campo"><label>Matrícula (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
-          
-          <div class="linha-campo"> 
-            <label for="cadOM">Empresa/Organização</label> 
-            <input 
-                id="cadOM" 
-                type="text" 
-                list="om-list" 
-                style="text-align: center"
-            > 
-        </div> 
-          <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="III - Servidores CIVIS" style="text-align: center" readonly></div>
-
-      `;
+        let html = `<div class="grupo-campos"><h3>Dados de ${v}</h3>`;
+        
+        if (v === "AERONAUTICA" || v === "EXERCITO") {
+            html += `
+                <div class="linha-campo"><label>OM</label><input id="cadOM" type="text"></div>
+                <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text"></div>
+                <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
+            `;
+        } else {
+            html += `<div class="linha-campo"><label>Informações Adicionais</label><input id="cadObs" type="text"></div>`;
+        }
+        
+        html += `</div>`;
+        container.innerHTML = html;
     }
-    return "";
-  }
 
-  function validarCamposComuns() {
-      let camposVazios = false;
-      const campoDataNasc = document.getElementById("cadDtNascimento");
-      const hoje = new Date();
-      
-      // 1. Array de campos para checar preenchimento
-      const camposObrigatorios = [
-          document.getElementById('cadNome'),
-          document.getElementById('cadRG'),
-          document.getElementById('cadORGAO'),
-          campoDataNasc,
-          document.getElementById('cadNaturalidade'),
-          document.getElementById('cadSexo'),
-          document.getElementById('cadEmail'),
-          document.getElementById('cadEndereco'),
-          document.getElementById('cadTelefone'),
-          document.getElementById('cadTpSang'),
-          document.getElementById('cadCor')
-      ];
-
-      // 2. Verifica primeiro se há campos vazios
-      camposObrigatorios.forEach(campo => {
-          if (!campo) return;
-          if (campo.value === "" || campo.value.startsWith('--- Selecione ---') || campo.value.startsWith('Selecione o estado')) {
-              campo.classList.add('invalido');
-              camposVazios = true;
-          } else {
-              campo.classList.remove('invalido');
-          }
-      });
-
-      if (camposVazios) {
-          toast("Preencha todos os campos obrigatórios em Dados Pessoais.", "red");
-          return false; // Para aqui e mostra o erro de campos vazios
-      }
-
-      // 3. Se todos estão preenchidos, valida a REGRA DE IDADE
-      const nascimento = new Date(campoDataNasc.value.replace(/-/g, '\/'));
-      let idade = hoje.getFullYear() - nascimento.getFullYear();
-      const m = hoje.getMonth() - nascimento.getMonth();
-      if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
-          idade--;
-      }
-
-      if (idade < 18 && vinculoAtual !== "DEPENDENTE") {
-          campoDataNasc.classList.add('invalido');
-          toast("Atenção: Data de Nascimento com idade >18 anos, corrija.", "red");
-          return false; // Para aqui e mostra o erro de idade
-      }
-
-      return true; // Só retorna true se passar em tudo
-  }
-
-    /* Função Auxiliar para formatar data de AAAA-MM-DD para DD/MM/AAAA */
-  function formatarDataBrasil(dataISO) {
-      if (!dataISO) return "";
-      
-      // A data ISO (e.g., "1984-09-05") é dividida em partes
-      const partes = dataISO.split('-');
-      
-      // Verifica se tem 3 partes (Ano, Mês, Dia)
-      if (partes.length === 3) {
-          // Retorna no formato DD/MM/AAAA
-          const ano = partes[0];
-          const mes = partes[1];
-          const dia = partes[2];
-          return `${dia}/${mes}/${ano}`;
-      }
-      return dataISO; // Retorna o valor original se o formato for inesperado
-  }
-
-  function salvarCadastro() {
-
-      // 1. Verifica se o Vínculo foi selecionado
-      if (!vinculoAtual) { toast("Selecione o vínculo.", "red"); return; }
-      
-      // 2. Verifica os campos comuns obrigatórios
-      // Se a validação falhar, a função retorna false e impede o envio.
-      if (!validarCamposComuns()) { return; }
-      
-      // 3. Verifica o campo Email novamente (caso o usuário tenha parado de digitar no inválido)
-      const cadEmail = document.getElementById('cadEmail');
-      // Checa se o campo Email está marcado como inválido pela validação em tempo real
-      if (cadEmail.classList.contains('invalido')) { toast("Corrija o formato do E-mail.", "red"); return; }
-
-      // 4. Se chegou até aqui, os dados são válidos. Prepara o payload (o resto da função permanece igual)
-      const payload = {
-          cod: document.getElementById("cod")?.value || "",   
-          // ... (seu payload) ...
-          rg: document.getElementById("cadRG")?.value || "",
-          orgao: document.getElementById("cadORGAO")?.value || "",
-          dt_nascimento: formatarDataBrasil(document.getElementById("cadDtNascimento")?.value) || "",
-          naturalidade: document.getElementById("cadNaturalidade")?.value || "",
-          cpf: document.getElementById("cadCPF")?.value || "",
-          sexo: document.getElementById("cadSexo")?.value || "",
-          posto: document.getElementById("cadPosto")?.value || "",
-          quadro: document.getElementById("cadQuadro")?.value || "",
-          especialidade: document.getElementById("cadEspecialidade")?.value || "",
-          nome: document.getElementById("cadNome")?.value.toUpperCase() || "",
-          saram: document.getElementById("cadSaram")?.value || "",
-          om: document.getElementById("cadOM")?.value || "",
-          email: document.getElementById("cadEmail")?.value || "",
-          endereco: document.getElementById("cadEndereco")?.value || "",
-          telefone: document.getElementById("cadTelefone")?.value || "",
-          grupo: document.getElementById("cadGrupo")?.value || "",
-          tp_sang: document.getElementById("cadTpSang")?.value || "",
-          cor: document.getElementById("cadCor")?.value || "",
-          nacionalidade: "BRASILEIRA",          
-          vinculo: vinculoAtual,
-          senha: "",
-          // NOVO: Campos de controle para o GAS
-          modo_operacao: modoOperacao
-                
-      };
-
-      // 1. Mensagens dinâmicas baseadas no modo
-      const msgProcessando = modoOperacao === "EDITAR" ? "Atualizando cadastro..." : "Realizando novo cadastro...";
-      const msgSucesso = modoOperacao === "EDITAR" ? "Edição realizada!" : "Cadastro realizado!";
-      const gasFunction = modoOperacao === "EDITAR" ? "EditarInspecionando" : "SalvarInspecionando";
-      
-      /*let sucessoMsg = modoOperacao === "EDITAR" ? "Edição realizada" : "Cadastro realizado";
-      let gasFunction = modoOperacao === "EDITAR" ? "EditarInspecionando" : "SalvarInspecionando"; // Adapte o nome da função no seu Code.gs
-      let sucessoDesc = modoOperacao === "EDITAR" ? "Dados atualizados com sucesso." : "Inspecionando cadastrado com sucesso.";*/
-
-      // 2. Inicia o bloqueio da tela
-      mostrarCarregando(msgProcessando);
-
-      google.script.run
-          .withSuccessHandler((res) => {
-            esconderCarregando();
-            hide_Nav_Cadastro();
-                if (res && res.success) {
-                        // Em vez de abrir modal de "OK", usamos o Toast (notificação rápida)
-                        toast(msgSucesso, "green");
-
-                        // 3. AÇÃO DIRETA: Após cadastrar/editar, o que o sistema deve fazer?
-                        // Sugestão: Voltar para a consulta com o cpf recem cadastrado
-                        setTimeout(() => {
-                          // Se o servidor retornou os dados atualizados em res.data, salvamos na Store
-                          if (res.data) {
-                              Store.set("dadosEdicao", res.data);
-                          }
-                          //Atualiza a store com o que veio do servidor
-                          go("Consulta"); 
-                        }, 1500); // Aguarda 1.5s para o usuário ler o toast
-
-                } else {
-                        // Se houver erro de validação no servidor, avisamos com o Modal (pois exige atenção)
-                        abrirModalSistema("Atenção", res.message, "Verifique os dados e tente novamente.");
-                }
-          })
-          .withFailureHandler(err => {
-              esconderCarregando();
-              abrirModalSistema("Falha Crítica", "Erro de conexão com o servidor.", err.toString());
-          })
-          [gasFunction](payload);
-  }//function salvarCadastro
-
-
-  return{};/*{
-    cleanup() {
-      // 💡 PASSO CRUCIAL 2: Limpar a função do escopo global ao sair da página
-      delete window.validarEmailAoDigitar; 
-      document.getElementById("btnSalvar").onclick = null;
+    function validarEmail(input) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (regex.test(input.value)) {
+            input.classList.replace("invalido", "valido") || input.classList.add("valido");
+        } else {
+            input.classList.replace("valido", "invalido") || input.classList.add("invalido");
+        }
     }
-  };*/
-};
 
+    async function salvar() {
+        if (!vinculoSelecionado) return alert("Selecione o vínculo!");
+        
+        document.getElementById('loader').style.display = 'flex';
+        
+        const payload = {
+            action: "salvarInspecionando",
+            cpf: document.getElementById("cadCPF").value,
+            nome: document.getElementById("cadNome").value.toUpperCase(),
+            vinculo: vinculoSelecionado,
+            rg: document.getElementById("cadRG").value,
+            email: document.getElementById("cadEmail").value,
+            // Adicione os outros campos aqui...
+        };
+
+        try {
+            const query = new URLSearchParams(payload).toString();
+            const response = await fetch(`${API_URL}?${query}`, { redirect: 'follow' });
+            const res = await response.json();
+
+            if (res.success) {
+                alert("Cadastro realizado com sucesso!");
+                window.location.href = "roteiro.html";
+            } else {
+                alert("Erro: " + res.message);
+            }
+        } catch (err) {
+            alert("Erro ao salvar dados.");
+        } finally {
+            document.getElementById('loader').style.display = 'none';
+        }
+    }
 </script>
-
-<style>
-
-  /* Centraliza o texto dentro de TODOS os campos de texto e caixas de seleção */
-#app input[type="text"],
-#app input[type="email"],
-#app input[type="date"],
-#app select,
-#app textarea linha-campo{
-    /* O ALINHAMENTO MÁGICO */
-    text-align: center; 
-    
-    /* (Opcional) Ajustes de fonte para melhor visualização */
-    font-size: 1em; 
-    font-weight: 500; /* Pode ajudar a destacar o valor centralizado */
-}
-
-
-/* Exceção: Campos readonly (opcional) */
-#app input[readonly] {
-    /* Mantenha campos readonly centralizados, mas mude a cor para indicar que não são editáveis */
-    background-color: #eee;
-    color: #555;
-    font-weight: bold;
-}
-
-/* ============================================================
-    ESTILO BASE PARA OS BOTÕES (Efeito 3D)
-============================================================ */
-.grupo-status-botoes button {
-    /* (Manter as regras de tamanho e flexbox de antes) */
-    min-width: 100px; 
-    flex: 1 1 0; 
-    text-align: center;
-    padding: 10px 15px; 
-    font-weight: bold;
-    border: none;
-    border-radius: 8px; /* Cantos levemente arredondados */
-    cursor: pointer;
-    transition: all 0.2s ease; /* Transição suave para o efeito 3D */
-    
-    /* ESTADO PADRÃO (Azul claro com sombra) */
-    background-color: #f0f8ff; /* Azul muito claro */
-    color: #0056b3; /* Cor do texto azul escuro */
-    
-    /* Sombra 3D: Deslocamento para baixo e para a direita simula profundidade */
-    box-shadow: 0 4px 0 0 #0056b3; /* Sombra sólida (a 'borda' 3D) */
-    transform: translateY(0); /* Posição inicial */
-}
-
-/* ============================================================
-    ESTADO DE HOVER (Azul escuro ao passar o mouse)
-============================================================ */
-.grupo-status-botoes button:hover {
-    background-color: #007bff; /* Azul vibrante */
-    color: white;
-    /* Remove a sombra e move levemente para cima para simular que está sendo pressionado */
-    box-shadow: 0 2px 0 0 #0056b3; 
-    transform: translateY(-2px); 
-}
-
-/* ============================================================
-    ESTADO ATIVO/SELECIONADO (Fundo Verde com Efeito Pressionado)
-============================================================ */
-.grupo-status-botoes button.ativo {
-    background-color: #28a745; /* Verde de sucesso */
-    color: white;
-    
-    /* Efeito Pressionado (Sombra menor e deslocamento para baixo) */
-    box-shadow: 0 0 0 0 #218838; /* Sombra 'desaparece' */
-    transform: translateY(4px); /* Move para baixo na profundidade */
-    
-    /* Remove a transição de hover para garantir que o estado ativo seja o foco */
-    pointer-events: none; 
-}
-
-/* ============================================================
-    ESTILO PARA GRUPOS DE CAMPOS (DIV COM BORDA)
-============================================================ */
-.grupo-campos {
-    border: 1px solid #ccc; /* Borda cinza suave */
-    border-radius: 10px; /* Cantos arredondados */
-    padding: 15px; /* Espaçamento interno para afastar os campos da borda */
-    margin-top: 25px; /* Espaço acima do grupo */
-    margin-bottom: 25px; /* Espaço abaixo do grupo */
-    background-color: #f9f9f9; /* Fundo levemente cinza para destacar */
-}
-
-/* Opcional: Ajusta o título para que ele se destaque dentro do grupo */
-.grupo-campos h3 {
-    border-bottom: 2px solid #0056b3; /* Linha azul para separar o título */
-    padding-bottom: 5px;
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #0056b3;
-}
-
-/* ============================================================
-    LAYOUT LADO A LADO (RG e Órgão)
-============================================================ */
-.linha-campos-dupla {
-    display: flex; /* Ativa o Flexbox para colocar itens lado a lado */
-    gap: 20px; /* Espaço entre os dois campos */
-    margin-bottom: 20px; /* Espaço após o grupo de campos duplos */
-}
-
-.campo-metade {
-    /* Define que cada campo ocupe metade do espaço e cresça para preencher */
-    flex: 1 1 50%; 
-    /* Garante que o input dentro deste campo use 100% da largura disponível */
-    width: 100%; 
-}
-
-/* Opcional: Garante que os inputs dentro da .campo-metade se comportem corretamente */
-.campo-metade input, .campo-metade select {
-    width: 100%;
-    /* ... mantenha os estilos de centralização de texto já definidos ... */
-}
-
-/* ============================================================
-    FEEDBACK DE VALIDAÇÃO DE CAMPO
-============================================================ */
-/* Estilo para campos que falharam na validação */
-#app input.invalido {
-    border: 2px solid red !important;
-    box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-    transition: border 0.3s;
-}
-
-/* Estilo para campos que passaram na validação */
-#app input.valido {
-    border: 2px solid green !important;
-    box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
-    transition: border 0.3s;
-}
-
-</style>
+</body>
+</html>
