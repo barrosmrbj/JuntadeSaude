@@ -75,7 +75,7 @@
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
-
+                     
     function limparCampos(){
         document.getElementById('cpfInput').value = '';
         document.getElementById('resultado').innerHTML = '';
@@ -89,8 +89,19 @@
         document.getElementById('loader').style.display = 'flex';
         document.getElementById('resultado').innerHTML = '';
         
+        // Construímos a URL com os parâmetros
+        const urlCompleta = `${API_URL}?action=buscarCPF&cpf=${encodeURIComponent(cpf)}`;
+
         try {
-            const response = await fetch(`${API_URL}?action=buscarCPF&cpf=${cpf}`);
+            // FETCH SIMPLIFICADO - Sem headers customizados para evitar pré-vôo de CORS
+            const response = await fetch(urlCompleta, {
+                method: "GET",
+                mode: "cors",
+                redirect: "follow"
+            });
+            
+            if (!response.ok) throw new Error('Falha na rede');
+
             const res = await response.json();
             
             if(res.success) {
@@ -101,7 +112,8 @@
                     <div class="alert alert-success shadow-sm">
                         <strong>Inspecionando Encontrado:</strong><br>
                         ${res.data.nome}<br>
-                        <small>Posto/Grad/Cat: ${res.data.posto}</small>
+                        <small>Posto/Grad/Cat: ${res.data.posto} ${res.data.quadro} ${res.data.especialidade} </small><br>
+                        <small>Data_Nasc: ${res.data.nascimento} Saram: ${res.data.saram}</small>
                         <button class="btn btn-sm btn-success d-block w-100 mt-3" onclick="window.location.href='roteiro.html'">Iniciar Ficha de Inspeção</button>
                     </div>`;
             } else {
