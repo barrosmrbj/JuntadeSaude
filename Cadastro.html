@@ -72,8 +72,9 @@
                 <input type="text" id="cadORGAO" list="listaORGAOS">
                 <datalist id="listaORGAOS">
                     <option value="COMAER">Comando da Aeronáutica</option>
-                    <option value="SSP">SSP</option>
-                    <option value="EB">Exército Brasileiro</option>
+                    <option value="SSP">Sec. Seg Pública - SSP</option>
+                    <option value="EXERCITO">Exército Brasileiro</option>
+                    <option value="MARINHA">Marinha Brasileira</option>
                 </datalist>
             </div>
         </div>
@@ -81,6 +82,49 @@
         <div class="linha-campo">
             <label for="cadDtNascimento">Data de Nascimento</label>
             <input id="cadDtNascimento" type="date">
+        </div>
+
+        <div class="linha-campo">
+          <label for="cadNaturalidade">Naturalidade</label>
+          <select id = "cadNaturalidade"  type="text">
+            <option disabled selected>Selecione o estado</option>
+            <option value="AC">Acre</option>
+            <option value="AL">Alagoas</option>
+            <option value="AP">Amapá</option>
+            <option value="AM">Amazonas</option>
+            <option value="BA">Bahia</option>
+            <option value="CE">Ceará</option>
+            <option value="DF">Distrito Federal</option>
+            <option value="ES">Espírito Santo</option>
+            <option value="GO">Goiás</option>
+            <option value="MA">Maranhão</option>
+            <option value="MT">Mato Grosso</option>
+            <option value="MS">Mato Grosso do Sul</option>
+            <option value="MG">Minas Gerais</option>
+            <option value="PA">Pará</option>
+            <option value="PB">Paraíba</option>
+            <option value="PR">Paraná</option>
+            <option value="PE">Pernambuco</option>
+            <option value="PI">Piauí</option>
+            <option value="RJ">Rio de Janeiro</option>
+            <option value="RN">Rio Grande do Norte</option>
+            <option value="RS">Rio Grande do Sul</option>
+            <option value="RO">Rondônia</option>
+            <option value="RR">Roraima</option>
+            <option value="SC">Santa Catarina</option>
+            <option value="SP">São Paulo</option>
+            <option value="SE">Sergipe</option>
+            <option value="TO">Tocantins</option>
+          </select>
+        </div>
+        
+        <div class="linha-campo">
+          <label for="cadSexo">Sexo</label>
+          <select id="cadSexo">
+            <option value="">-- selecione --</option>
+            <option value="MASC">Masculino</option>
+            <option value="FEM">Feminino</option>
+          </select>
         </div>
 
         <div class="linha-campo">
@@ -92,8 +136,43 @@
             <label for="cadTelefone">Telefone</label>
             <input id="cadTelefone" type="text" placeholder="(92) 99999-9999">
         </div>
-    </div>
 
+        <div class="linha-campo">
+          <label for="cadTpSang">Tipo Sanguíneo</label>
+          <select id="cadTpSang" name="fatorsanguineo">
+              <option value="" disabled selected>--- Selecione ---</option>
+              <option value="A+">A+ (A Positivo)</option>
+              <option value="A-">A- (A Negativo)</option>
+              <option value="B+">B+ (B Positivo)</option>
+              <option value="B-">B- (B Negativo)</option>
+              <option value="AB+">AB+ (AB Positivo)</option>
+              <option value="AB-">AB- (AB Negativo)</option>
+              <option value="O+">O+ (O Positivo)</option>
+              <option value="O-">O- (O Negativo)</option>
+              <option value="NAO-SEI">Não sei</option>
+          </select>
+        </div>    
+        
+        <div class="linha-campo">
+          <label for="cadCor">Cor</label>
+          <select id="cadCor" name="Cor">
+            <option value="" disabled selected>--- Selecione ---</option>
+            <option value="BRANCA">BRANCA</option>
+            <option value="PRETA">PRETA</option>
+            <option value="PARDA">PARDA</option>
+            <option value="AMARELA">AMARELA</option>
+            <option value="INDIGENA">INDIGENA</option>
+          </select>   
+        </div>
+
+        <div class="linha-campo">
+          <label for="cadNacionalidade">Nacionalidade</label>
+          <input id="cadNacionalidade" type="text" value="BRASILEIRA" readonly>
+        </div>
+
+    </div>
+    
+    <!-- CAMPOS ESPECÍFICOS -->  
     <div id="campoVinculo"></div>
 
     <div class="d-flex justify-content-between mt-4">
