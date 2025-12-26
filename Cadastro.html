@@ -190,7 +190,7 @@
 </footer>
 
 <script>
-    const API_URL = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/";
+    const API_URL = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //url projeto GAS apos implantado
     let vinculoSelecionado = "";
 
     // 1. Inicialização
@@ -200,7 +200,7 @@
         if (cpf) document.getElementById('cadCPF').value = cpf;
         
         configurarBotoesVinculo();
-        carregarListasDoGAS()
+        carregarListasDoGAS();
         document.getElementById("btnSalvar").onclick = salvar;
     };
 
