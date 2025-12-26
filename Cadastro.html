@@ -190,7 +190,8 @@
 </footer>
 
 <script>
-    const API_URL = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //url projeto GAS apos implantado
+    const API_URL_BANCO_INSP = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //banco inspecionandos
+    const API_URL_GAS = "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
     let vinculoSelecionado = "";
 
     // 1. Inicialização
@@ -264,7 +265,7 @@
 
         try {
             const query = new URLSearchParams(payload).toString();
-            const response = await fetch(`${API_URL}?${query}`, { redirect: 'follow' });
+            const response = await fetch(`${API_URL_BANCO_INSP}?${query}`, { redirect: 'follow' });
             const res = await response.json();
 
             if (res.success) {
@@ -282,7 +283,7 @@
     // Chame esta função dentro do window.onload
     async function carregarListasDoGAS() {
         try {
-            const response = await fetch(`${API_URL}?action=getDadosIniciais`);
+            const response = await fetch(`${API_URL_GAS}?action=getDadosIniciais`);
             const res = await response.json();
 
             if (res.success) {
