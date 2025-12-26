@@ -171,7 +171,7 @@
         </div>
 
     </div>
-    
+
     <!-- CAMPOS ESPECÍFICOS -->  
     <div id="campoVinculo"></div>
 
@@ -180,6 +180,10 @@
         <button id="btnSalvar" class="btn btn-primary px-4">Cadastrar Inspecionando</button>
     </div>
 </div>
+
+<datalist id="lista-oms"></datalist>
+<datalist id="lista-postos"></datalist>
+<datalist id="lista-grupos"></datalist>
 
 <footer class="text-center mt-5 p-3 text-muted border-top">
     Copyright © 2025 Developed by Sgt Barros - Junta de Saúde do HAMN.
@@ -222,6 +226,8 @@
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text"></div>
                 <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text"></div>
                 <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
+                <div class="linha-campo">
+    <label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>
             `;
         } else {
             html += `<div class="linha-campo"><label>Informações Adicionais</label><input id="cadObs" type="text"></div>`;
@@ -271,6 +277,32 @@
         } finally {
             document.getElementById('loader').style.display = 'none';
         }
+    }
+    // Chame esta função dentro do window.onload
+    async function carregarListasDoGAS() {
+        try {
+            const response = await fetch(`${API_URL}?action=getDadosIniciais`);
+            const res = await response.json();
+
+            if (res.success) {
+                // Preenche as OMs
+                popularDatalist("lista-oms", res.oms);
+                // Preenche os Postos
+                popularDatalist("lista-postos", res.postos);
+                // Preenche os Grupos
+                popularDatalist("lista-grupos", res.grupos);
+            }
+        } catch (error) {
+            console.error("Erro ao carregar listas:", error);
+        }
+    }
+
+    function popularDatalist(id, lista) {
+        const elemento = document.getElementById(id);
+        if (!elemento || !lista) return;
+        
+        // Transforma o array em várias tags <option>
+        elemento.innerHTML = lista.map(item => `<option value="${item}">`).join('');
     }
 </script>
 </body>
