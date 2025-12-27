@@ -33,8 +33,6 @@
 
 <div id="loader" class="loading-overlay"><div class="spinner-border text-primary"></div></div>
 
-<div id="teste"></div>
-
 <div class="container" style="max-width: 800px;">
     <h2>Cadastro do Inspecionando</h2>
 
@@ -171,13 +169,13 @@
           <label for="cadNacionalidade">Nacionalidade</label>
           <input id="cadNacionalidade" type="text" value="BRASILEIRA" readonly>
         </div>
+        
+        
 
     </div>
 
     <!-- CAMPOS ESPECÍFICOS -->  
     <div id="campoVinculo"></div>
-
-    <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
 
     <div class="d-flex justify-content-between mt-4">
         <button class="btn btn-secondary px-4" onclick="window.location.href='index.html'">Voltar</button>
@@ -194,7 +192,7 @@
 </footer>
 
 <script>
-    const API_URL_BANCO_INSP = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //banco inspecionandos
+    const API_URL_INSP = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //banco inspecionandos
     const API_URL_GAS = "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
     let vinculoSelecionado = "";
 
@@ -229,7 +227,7 @@
         
         if (v === "AERONAUTICA" || v === "EXERCITO") {
             html += `
-                
+                <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
                 <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text" list="lista-postos"></div>
                 <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
                 <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>
@@ -268,7 +266,7 @@
 
         try {
             const query = new URLSearchParams(payload).toString();
-            const response = await fetch(`${API_URL_BANCO_INSP}?${query}`, { redirect: 'follow' });
+            const response = await fetch(`${API_URL_INSP}?${query}`, { redirect: 'follow' });
             const res = await response.json();
 
             if (res.success) {
