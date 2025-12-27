@@ -169,11 +169,7 @@
           <label for="cadNacionalidade">Nacionalidade</label>
           <input id="cadNacionalidade" type="text" value="BRASILEIRA" readonly>
         </div>
-        
-        <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
-        <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text" list="lista-postos"></div>
-        <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>
-        
+               
       </div>
 
     <!-- CAMPOS ESPECÍFICOS -->  
@@ -229,8 +225,9 @@
         
         if (v === "AERONAUTICA" || v === "EXERCITO") {
             html += `
-                
-                
+                <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
+                <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text" list="lista-postos"></div>
+                <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>                        
                 <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
             `;
         } else {
