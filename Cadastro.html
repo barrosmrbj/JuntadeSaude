@@ -201,7 +201,6 @@
         if (cpf) document.getElementById('cadCPF').value = cpf;
         
         configurarBotoesVinculo();
-        carregarListasDoGAS();
         document.getElementById("btnSalvar").onclick = salvar;
     };
 
@@ -233,6 +232,7 @@
         } else {
             html += `<div class="linha-campo"><label>Informações Adicionais</label><input id="cadObs" type="text"></div>`;
         }
+        carregarListasDoGAS();
         
         html += `</div>`;
         container.innerHTML = html;
