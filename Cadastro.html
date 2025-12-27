@@ -164,12 +164,16 @@
             <option value="INDIGENA">INDIGENA</option>
           </select>   
         </div>
-
+        
         <div class="linha-campo">
           <label for="cadNacionalidade">Nacionalidade</label>
           <input id="cadNacionalidade" type="text" value="BRASILEIRA" readonly>
         </div>
-               
+        
+        <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
+        <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text" list="lista-postos"></div>
+        <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div> 
+
       </div>
 
     <!-- CAMPOS ESPECÍFICOS -->  
@@ -201,6 +205,7 @@
         if (cpf) document.getElementById('cadCPF').value = cpf;
         
         configurarBotoesVinculo();
+        carregarListasDoGAS();
         document.getElementById("btnSalvar").onclick = salvar;
     };
 
@@ -224,15 +229,11 @@
         
         if (v === "AERONAUTICA" || v === "EXERCITO") {
             html += `
-                <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
-                <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text" list="lista-postos"></div>
-                <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>                        
                 <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
             `;
         } else {
             html += `<div class="linha-campo"><label>Informações Adicionais</label><input id="cadObs" type="text"></div>`;
         }
-        carregarListasDoGAS();
         
         html += `</div>`;
         container.innerHTML = html;
