@@ -286,8 +286,7 @@
             const res = await response.json();
 
             if (res.success) {
-                console.log("Listas carregadas do GAS.");
-                document.getElementById('teste').value = res.oms;
+                console.log("Dados recebidos do GAS:", res);
                 // Preenche as OMs
                 popularDatalist("lista-oms", res.oms);
                 // Preenche os Postos
