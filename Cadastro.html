@@ -229,8 +229,7 @@
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text"></div>
                 <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text"></div>
                 <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
-                <div class="linha-campo">
-    <label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>
+                <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div>
             `;
         } else {
             html += `<div class="linha-campo"><label>Informações Adicionais</label><input id="cadObs" type="text"></div>`;
@@ -288,6 +287,7 @@
             const res = await response.json();
 
             if (res.success) {
+                console.log("Listas carregadas do GAS.");
                 // Preenche as OMs
                 popularDatalist("lista-oms", res.oms);
                 // Preenche os Postos
