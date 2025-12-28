@@ -15,9 +15,9 @@ body {
 }
 
 
-input, select, button {
-    font-size: 18px !important; /* Fonte maior para facilitar o toque e visão */
-    height: 45px;               /* Altura boa para clicar com o dedo */
+img, input, select, textarea {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 
@@ -56,6 +56,7 @@ input, select { text-align: center; padding: 8px; border-radius: 5px; border: 1p
     box-shadow: 0 3px 6px rgba(0,0,0,0.18);
 }
 
+
 .btn-sistema:hover {
     background-color: #1f54b6;
     transform: translateY(-2px);
@@ -74,6 +75,12 @@ input, select { text-align: center; padding: 8px; border-radius: 5px; border: 1p
     box-shadow: none;
 }
 
+
+.btn-sistema {
+    flex: 1; /* Faz os botões dividirem o espaço igualmente */
+    padding: 12px 5px;
+    font-size: 14px;
+}
 
 /* Botões secundários */
 .btn-secundario {
@@ -233,6 +240,7 @@ input.form-control.text-center { text-align: center; }
 
 /* ITEM COMPLETO */
 .step-item {
+    font-size: 10px; /* Texto menor */
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -283,14 +291,19 @@ input.form-control.text-center { text-align: center; }
     background: linear-gradient(90deg, #00b894, #55efc4);
 }
 
+.step-item .step-number {
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+}
 
 
-/* Containers de botões do Wizard */
+/* Ajusta os botões para ficarem um embaixo do outro se necessário, ou lado a lado compactos */
 .wizard-buttons {
-    width: 100%;
     display: flex;
-    justify-content: space-between;
-    margin-top: 25px;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
 }
 
 
