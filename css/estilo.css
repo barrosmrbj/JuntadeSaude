@@ -15,19 +15,22 @@ body {
 }
 
 /* CONTAINER APP (O QUE VOCÊ VÊ EM BRANCO) */
-#tela-consulta, #wizardContainer {
+#tela-consulta, #wizardContainer, .container-principal {
     width: 100%;
     max-width: 450px;
     background: #ffffff;
-    min-height: 100vh; /* Ocupa a tela toda no mobile */
+    /* Alterado de 100vh para auto para o container abraçar o conteúdo */
+    min-height: auto; 
     display: flex;
-    flex-direction: column; /* Pilha vertical */
+    flex-direction: column;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    margin: 20px auto; /* Adiciona uma margem superior para não colar no topo */
+    border-radius: 15px; /* Arredonda levemente para um visual mais moderno */
+    overflow: hidden;
 }
 
 /* ÁREA DE CONTEÚDO (CRESCE PARA EMPURRAR O FOOTER) */
 .main-content, .wizard-step {
-    flex: 1; /* Preenche o espaço disponível */
     padding: 30px 20px;
 }
 
@@ -199,4 +202,20 @@ footer {
     background: rgba(255,255,255,0.8);
     display: none; justify-content: center; align-items: center;
     z-index: 9999;
+}
+
+.header-fixo {
+    background-color: #2477d0;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.logo-header {
+    height: 30px;
 }
