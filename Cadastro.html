@@ -5,41 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - JUNTA DE SAÚDE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; padding: 20px; font-family: sans-serif; }
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); display: none; justify-content: center; align-items: center; z-index: 9999; }
-        
-        /* Estilos originais que você enviou */
-        .grupo-campos { border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-top: 25px; margin-bottom: 25px; background-color: #f9f9f9; }
-        .grupo-campos h3 { border-bottom: 2px solid #0056b3; padding-bottom: 5px; color: #0056b3; }
-        .linha-campo { margin-bottom: 15px; display: flex; flex-direction: column; }
-        .linha-campo label { font-weight: bold; margin-bottom: 5px; }
-        input, select { text-align: center; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
-        
-        /* Botões com efeito 3D (do seu código original) */
-        .grupo-status-botoes { display: flex; gap: 10px; flex-wrap: wrap; }
-        .grupo-status-botoes button { 
-            min-width: 100px; flex: 1 1 0; padding: 10px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;
-            background-color: #f0f8ff; color: #0056b3; box-shadow: 0 4px 0 0 #0056b3; transition: all 0.2s;
-        }
-        .grupo-status-botoes button:hover { background-color: #007bff; color: white; transform: translateY(-2px); }
-        .grupo-status-botoes button.ativo { background-color: #28a745; color: white; box-shadow: 0 0 0 0 #218838; transform: translateY(4px); }
-        
-        .invalido { border: 2px solid red !important; }
-        .valido { border: 2px solid green !important; }
-    </style>
+    <link rel="stylesheet" href="css/estilo.css">
 </head>
 <body>
 
-<div id="loader" class="loading-overlay"><div class="spinner-border text-primary"></div></div>
+  <div id="loader" class="loading-overlay"><div class="spinner-border text-primary"></div></div>
 
-<div class="container" style="max-width: 800px;">
+  <nav class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container-fluid"><span class="navbar-brand">JUNTA DE SAÚDE - AppWeb Versão 1.0</span></div>
+  </nav>
+
+  <div class="container" style="max-width: 800px;">
     <h2>Cadastro do Inspecionando</h2>
 
     <div class="linha-campo">
         <label for="cadCPF">CPF</label>
         <input id="cadCPF" type="text" maxlength="11" readonly style="background-color: #eee;">
     </div>
+    <button type="button" class="btn-sistema" onclick="cancelarEReiniciar()">
+        <i class="fas fa-times"></i> CANCELAR E VOLTAR
+    </button>
 
     <p>Complete os dados abaixo para prosseguir.</p>
 
@@ -51,7 +36,9 @@
             <button type="button" data-v="PENSIONISTAS">PENSIONISTAS</button>
             <button type="button" data-v="EXERCITO">EXERCITO</button>
             <button type="button" data-v="EMPRESA">EMPRESA</button>
-            <button type="button" data-v="CANDIDATOS">CANDIDATOS</button>
+            <button type="button" data-v="CONCURSO">CONCURSO</button>
+            <button type="button" data-v="PROC_SELETIVO">PR_SELETIVO</button>
+            <button type="button" data-v="RECRUTA">RECRUTA</button>
         </div>
     </div>
 
@@ -130,6 +117,7 @@
         <div class="linha-campo">
             <label for="cadEmail">E-mail</label>
             <input id="cadEmail" type="email" placeholder="exemplo@dominio.com" oninput="validarEmail(this)">
+            <span id="erroEmail" class="msg-erro">Formato de e-mail inválido.</span>
         </div>
         
         <div class="linha-campo">
@@ -170,10 +158,7 @@
           <input id="cadNacionalidade" type="text" value="BRASILEIRA" readonly>
         </div>
         
-        <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
-        <div class="linha-campo"><label>Posto/Grad</label><input id="cadPosto" type="text" list="lista-postos"></div>
-        <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div> 
-
+        
       </div>
 
     <!-- CAMPOS ESPECÍFICOS -->  
@@ -187,126 +172,13 @@
 
 <datalist id="lista-oms"></datalist>
 <datalist id="lista-postos"></datalist>
+<datalist id="lista-quadro"></datalist>
+<datalist id="lista-esp"></datalist>
 <datalist id="lista-grupos"></datalist>
 
 <footer class="text-center mt-5 p-3 text-muted border-top">
     Copyright © 2025 Developed by Sgt Barros - Junta de Saúde do HAMN.
 </footer>
-
-<script>
-    const API_URL_INSP = "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //banco inspecionandos
-    const API_URL_GAS = "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
-    let vinculoSelecionado = "";
-
-    // 1. Inicialização
-    window.onload = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const cpf = urlParams.get('cpf');
-        if (cpf) document.getElementById('cadCPF').value = cpf;
-        
-        configurarBotoesVinculo();
-        carregarListasDoGAS();
-        document.getElementById("btnSalvar").onclick = salvar;
-    };
-
-    function configurarBotoesVinculo() {
-        document.querySelectorAll("#btnVinculo button").forEach(btn => {
-            btn.onclick = () => {
-                document.querySelectorAll("#btnVinculo button").forEach(b => b.classList.remove("ativo"));
-                btn.classList.add("ativo");
-                vinculoSelecionado = btn.dataset.v;
-                document.getElementById("campoComum").style.display = "block";
-                gerarCamposEspecificos(vinculoSelecionado);
-            };
-        });
-    }
-
-    function gerarCamposEspecificos(v) {
-        const container = document.getElementById("campoVinculo");
-        container.innerHTML = ""; // Limpa
-        
-        let html = `<div class="grupo-campos"><h3>Dados de ${v}</h3>`;
-        
-        if (v === "AERONAUTICA" || v === "EXERCITO") {
-            html += `
-                <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
-            `;
-        } else {
-            html += `<div class="linha-campo"><label>Informações Adicionais</label><input id="cadObs" type="text"></div>`;
-        }
-        
-        html += `</div>`;
-        container.innerHTML = html;
-    }
-
-    function validarEmail(input) {
-        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        if (regex.test(input.value)) {
-            input.classList.replace("invalido", "valido") || input.classList.add("valido");
-        } else {
-            input.classList.replace("valido", "invalido") || input.classList.add("invalido");
-        }
-    }
-
-    async function salvar() {
-        if (!vinculoSelecionado) return alert("Selecione o vínculo!");
-        
-        document.getElementById('loader').style.display = 'flex';
-        
-        const payload = {
-            action: "salvarInspecionando",
-            cpf: document.getElementById("cadCPF").value,
-            nome: document.getElementById("cadNome").value.toUpperCase(),
-            vinculo: vinculoSelecionado,
-            rg: document.getElementById("cadRG").value,
-            email: document.getElementById("cadEmail").value,
-            // Adicione os outros campos aqui...
-        };
-
-        try {
-            const query = new URLSearchParams(payload).toString();
-            const response = await fetch(`${API_URL_INSP}?${query}`, { redirect: 'follow' });
-            const res = await response.json();
-
-            if (res.success) {
-                alert("Cadastro realizado com sucesso!");
-                window.location.href = "roteiro.html";
-            } else {
-                alert("Erro: " + res.message);
-            }
-        } catch (err) {
-            alert("Erro ao salvar dados.");
-        } finally {
-            document.getElementById('loader').style.display = 'none';
-        }
-    }
-    // Chame esta função dentro do window.onload
-    async function carregarListasDoGAS() {
-        try {
-            const response = await fetch(`${API_URL_GAS}?action=getDadosIniciais`);
-            const res = await response.json();
-
-            if (res.success) {
-                console.log("Dados recebidos do GAS:", res);
-                // Preenche as OMs
-                popularDatalist("lista-oms", res.oms);
-                // Preenche os Postos
-                popularDatalist("lista-postos", res.postos);
-                // Preenche os Grupos
-                popularDatalist("lista-grupos", res.grupos);
-            }
-        } catch (error) {
-            console.error("Erro ao carregar listas:", error);
-        }
-    }
-
-    function popularDatalist(id, lista) {
-        const elemento = document.getElementById(id);
-        if (!elemento || !lista) return;
-        
-        // Transforma o array em várias tags <option>
-        elemento.innerHTML = lista.map(item => `<option value="${item}">`).join('');
-    }
-</script>
+<script src="js/script_cadastro.js"></script>
 </body>
 </html>
