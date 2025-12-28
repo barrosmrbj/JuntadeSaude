@@ -2,14 +2,18 @@
 
 /* Para manter o padrão em todas as páginas, 
 certifique-se que o body e as fontes sejam as mesmas do index */
+/* Ajuste para o fundo da página (fora do "celular") */
 body {
+    background-color: #2c3e50; /* Cor escura para destacar o "aparelho" no centro */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 16px;
-    background-color: #f4f7f6; /* Cor de fundo padrão */
-    margin: 0;
-    padding: 20px;
-    display: flex; flex-direction: column; min-height: 100vh; 
 }
+
 
 input, select, button {
     font-size: 18px !important; /* Fonte maior para facilitar o toque e visão */
@@ -95,13 +99,6 @@ input.form-control.text-center { text-align: center; }
 
                                                         /* Estilo Fichas.html*/
 /* Container do wizard com animação ao entrar */
-
-
-#wizardContainer {
-  animation: fadeScaleIn 0.4s ease forwards;
-  transform-origin: top center;
-  opacity: 0;
-}
 
 /* Fade + scale na primeira aparição */
 @keyframes fadeScaleIn {
@@ -384,3 +381,15 @@ h3 {
     background-color: #e74c3c;
 }
 
+/* Limita o tamanho da tela para parecer um celular */
+#wizardContainer, .container-principal {
+    max-width: 450px;       /* Largura padrão de um celular grande */
+    margin: 20px auto;      /* Centraliza na tela do PC */
+    background: #ffffff;
+    min-height: 90vh;       /* Ocupa quase toda a altura da tela */
+    border-radius: 20px;    /* Arredonda as bordas para parecer um aparelho */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Sombra para dar profundidade */
+    padding: 20px;
+    overflow-x: hidden;     /* Evita barras de rolagem horizontais */
+    position: relative;
+}
