@@ -221,3 +221,73 @@ footer {
 .logo-header {
     height: 30px;
 }
+
+/* CONTAINER DO ROTEIRO */
+.roteiro-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    gap: 12px;
+    padding: 10px;
+}
+
+.roteiro-item {
+    background: #ffffff;
+    border: 2px solid #edf2f7;
+    border-radius: 12px;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Estado Ativo (Selecionado) */
+.roteiro-item.ativo {
+    border-color: #27ae60;
+    background: #f0fff4;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+}
+
+.roteiro-item.ativo .rot-label {
+    color: #1e7e34;
+}
+
+.rot-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: uppercase;
+}
+
+/* Esconde o checkbox real para usar o card como botão */
+.chkRoteiro {
+    display: none;
+}
+
+/* Checkbox customizado (Bolinha) */
+.check-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roteiro-item.ativo .check-custom {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+.roteiro-item.ativo .check-custom::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+}
