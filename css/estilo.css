@@ -10,7 +10,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: 100vh;
+    min-height: auto;
     font-family: 'Segoe UI', sans-serif;
 }
 
@@ -23,15 +23,16 @@ body {
     min-height: auto; 
     display: flex;
     flex-direction: column;
-    box-shadow: 0 0 20px rgba(0,0,0,0.3);
-    margin: 20px auto; /* Adiciona uma margem superior para não colar no topo */
-    border-radius: 15px; /* Arredonda levemente para um visual mais moderno */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    margin: 10px auto; /* Adiciona uma margem superior para não colar no topo */
+    border-radius: 12px; /* Arredonda levemente para um visual mais moderno */
     overflow: hidden;
 }
 
 /* ÁREA DE CONTEÚDO (CRESCE PARA EMPURRAR O FOOTER) */
 .main-content, .wizard-step {
-    padding: 30px 20px;
+    padding: 20px;
+    min-height: 300px; /* Garante um espaço mínimo antes do footer */
 }
 
 /* =====================================================================
@@ -177,9 +178,10 @@ footer {
     padding: 15px;
     background-color: #f8f9fa;
     color: #6c757d;
-    font-size: 11px;
+    font-size: 12px;
     text-align: center;
     border-top: 1px solid #dee2e6;
+    border-radius: 0 0 12px 12px;
     margin-top: auto; /* Truque mestre do Flexbox */
 }
 /* =====================================================================

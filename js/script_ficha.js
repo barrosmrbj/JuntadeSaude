@@ -92,12 +92,14 @@ async function carregarListasParaFicha() {
 async function salvarFichaCompleta() {
     // 1. Mostra um loader ou desabilita o botão para evitar cliques duplos
     const btn = document.getElementById("btnSalvarFinal");
+    if (!btn) return;
+
+    // Bloqueia cliques duplos
     btn.disabled = true;
     btn.innerText = "Enviando...";
 
     // Loader e Payload
-    const payload = {
-        action: "salvarFichaInspeção",
+    const dadosFicha = {
         // dados básicos trazidos da pesquisa (CURRENT_DATA)
         //dt_insp: new Date().toISOString(),  será substituído no GAS pelo padrão BR
         cod: CURRENT_DATA?.cod || "",
@@ -132,24 +134,29 @@ async function salvarFichaCompleta() {
         obs_cartao: document.getElementById("periodo_curso")?.value || ""
     };
 
-    try {
-        const response = await fetch(API_URL_GAS, {
-            method: "POST",
-            body: JSON.stringify(payload)
+try {
+        // 2. IMPORTANTE: No Google Apps Script, usamos GET ou enviamos via URLSearchParams
+        // para evitar problemas de CORS em redirecionamentos.
+        const params = new URLSearchParams({
+            action: "salvarFichaInspeção",
+            dados: JSON.stringify(dadosFicha)
         });
+
+        const response = await fetch(`${API_URL_GAS}?${params.toString()}`, {
+            method: "GET" // O doGet do seu GAS processará isso perfeitamente
+        });
+
         const res = await response.json();
 
         if (res.success) {
-            alert("✅ Ficha salva com sucesso!");
-            window.location.href = "index.html?status=concluido";
+            alert("✅ Ficha salva com sucesso!\nControle(s): " + res.controle.join(", "));
+            window.location.href = "index.html?status=concluido"; //encaminhar para o roteiro
         } else {
-            alert("❌ Erro ao salvar: " + res.message);
-            btn.disabled = false;
-            btn.innerText = "Salvar Ficha";
+            throw new Error(res.message);
         }
     } catch (err) {
-        console.error("Erro no fetch:", err);
-        alert("Erro de conexão com o servidor.");
+        console.error("Erro ao salvar:", err);
+        alert("❌ Erro ao salvar: " + err.message);
         btn.disabled = false;
         btn.innerText = "Salvar Ficha";
     }
@@ -167,4 +174,26 @@ function cancelarEReiniciar() {
         // Volta para a página inicial
         window.location.href = 'index.html';
     }
+}
+
+function limparCampos() {
+    // Limpa o campo de entrada do CPF
+    const cpfInput = document.getElementById("cpfInput");
+    if (cpfInput) {
+        cpfInput.value = "";
+        cpfInput.classList.remove("is-invalid", "is-valid");
+    }
+
+    // Limpa a div de mensagens de erro
+    const errorDiv = document.getElementById("CampoCPF-error");
+    if (errorDiv) errorDiv.innerText = "";
+
+    // Limpa a área de resultados da pesquisa
+    const resultadoDiv = document.getElementById("resultado");
+    if (resultadoDiv) resultadoDiv.innerText = "";
+
+    // Reseta o objeto global de dados do militar pesquisado
+    window.CURRENT_DATA = null;
+
+    console.log("Campos limpos e prontos para nova consulta.");
 }
