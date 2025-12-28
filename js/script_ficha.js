@@ -149,8 +149,22 @@ try {
         const res = await response.json();
 
         if (res.success) {
+            // 1. Prepara a "mochila" de dados para o roteiro
+            const dadosParaRoteiro = {
+                cpf: dadosFicha.cpf,
+                nome: dadosFicha.nome,
+                posto: dadosFicha.posto,
+                sexo: dadosFicha.sexo,
+                dt_nascimento: dadosFicha.dt_nascimento,
+                finalidades: dadosFicha.finalidades // Essencial para a regra da letra "G"
+            };
+
+            // 2. Salva no navegador (Persistência)
+            localStorage.setItem("dadosRoteiro", JSON.stringify(dadosParaRoteiro));
+               
             alert("✅ Ficha salva com sucesso!\nControle(s): " + res.controle.join(", "));
-            window.location.href = "index.html?status=concluido"; //encaminhar para o roteiro
+            // 3. Redireciona para a página do roteiro
+            window.location.href = "roteiro.html";
         } else {
             throw new Error(res.message);
         }

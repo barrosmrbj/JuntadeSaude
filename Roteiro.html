@@ -11,26 +11,49 @@
 
 <body>
 
-    <div id="loader" class="loading-overlay">
-        <div class="spinner-border text-primary"></div>
-    </div>
-
     <div id="tela-consulta">
         <nav class="navbar navbar-dark bg-dark shadow-sm header-fixo">
-            <img src="/img/hamn.webp" alt="Logo HAMN" class="logo-header">
+            <img src="https://github.com/barrosmrbj/JuntadeSaude/blob/421f3326ebe7d64307b1f83e64e4169aeae7c6c9/img/hamn.webp?raw=true"
+                alt="Logo HAMN" class="logo-header">
             <span class="titulo-header">JUNTA DE SAÚDE - AppWeb Versão 1.0</span>
         </nav>
 
-        <div class="container" style="max-width: 800px;">
-            <h2>Cadastro do Inspecionando</h2>
+        <div id="wizardContainer">
+            <div class="main-content">
+                <h3>"MEU" Roteiro</h3>
+                <div class="progresso-container">
+                    <div class="progresso-texto">Progresso: <span id="percentual">0%</span></div>
+                    <div class="progresso-bg">
+                        <div id="progresso-barra"></div>
+                    </div>
+                </div>                
+                <p class="text-center text-muted mb-4" style="font-size: 0.9rem;">
+                    Marque os setores por onde você já passou:
+                </p>
 
+                <div id="listaRoteiro" class="roteiro-grid">
+                </div>
+
+                <button class="btn-sistema btn-sucesso w-100 mt-4" id="btnFinalizar" onclick="finalizarRoteiro()">
+                    Finalizar Inspeção
+                </button>
+
+                <div id="msgFinalizar" class="msg-finalizar-estilo" style="display:none; text-align: center; margin-top: 20px;">
+                    <p><strong>Obrigado por utilizar nossos serviços!</strong></p>
+                    <p>Apresente-se ao militar da recepção para conferência final.</p>
+                </div>
+            </div>
+            <button type="button" class="btn-sistema" onclick="finalizarEResetar()">
+               ⌂ VOLTAR ao INICIO ⌂
+            </button>
         </div>
+
         <footer class="text-center mt-5 p-3 text-muted border-top">
-            Copyright © 2025 Developed by Sgt Barros - Junta de Saúde do HAMN.
+            Copyright © 2025 Developed by Sgt Barros - Junta de Saúde do HAMN. ☏3623-4249/4214
         </footer>
 
     </div>
-
+    <script src="js/script_roteiro.js"></script>
 </body>
 
 </html>

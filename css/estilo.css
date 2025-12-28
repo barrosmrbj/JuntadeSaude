@@ -226,43 +226,46 @@ footer {
 .roteiro-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 colunas */
-    gap: 12px;
+    gap: 15px;
     padding: 10px;
 }
 
 .roteiro-item {
     background: #ffffff;
-    border: 2px solid #edf2f7;
+    border: 3px solid #d1d8e0;
     border-radius: 12px;
-    padding: 15px 10px;
+    padding: 20px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Estado Ativo (Selecionado) */
+/* ESTADO SELECIONADO (MARCADO) */
 .roteiro-item.ativo {
-    border-color: #27ae60;
-    background: #f0fff4;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+    border: 3px solid #2477d0; /* Borda bem grossa e azul */
+    background: #eef6ff;
+    transform: scale(1.03); /* Leve aumento no tamanho */
+    box-shadow: 0 8px 20px rgba(36, 119, 208, 0.25); /* Sombra azulada */
 }
 
 .roteiro-item.ativo .rot-label {
-    color: #1e7e34;
+    color: #1a528d;
 }
 
+/* TEXTO DA CLÍNICA */
 .rot-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #4a5568;
+    font-size: 13px;
+    font-weight: 800; /* Texto mais "bold" */
+    color: #2c3e50;
     text-transform: uppercase;
+    line-height: 1.2;
 }
 
 /* Esconde o checkbox real para usar o card como botão */
@@ -272,22 +275,53 @@ footer {
 
 /* Checkbox customizado (Bolinha) */
 .check-custom {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     border: 2px solid #cbd5e0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: white;
+    transition: 0.2s;
 }
-
 .roteiro-item.ativo .check-custom {
-    background: #27ae60;
-    border-color: #27ae60;
+    background: #2477d0;
+    border-color: #2477d0;
+    color: white;
 }
 
 .roteiro-item.ativo .check-custom::after {
     content: '✓';
     color: white;
     font-size: 12px;
+}
+
+.progresso-container {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.progresso-texto {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.progresso-bg {
+    width: 100%;
+    height: 10px;
+    background: #dfe6e9;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#progresso-barra {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    transition: width 0.4s ease;
 }
