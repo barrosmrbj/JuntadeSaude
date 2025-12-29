@@ -16,6 +16,9 @@ let selectedFinalidades = new Set();
    ===================================================================== */
 window.onload = async () => {
     try {
+        loader.style.display = 'flex';
+
+        // Passo a passo da inicialização       
         // 1. Pega dados do sessionStorage
         const rawData = sessionStorage.getItem('dadosInspecionando');
         if (!rawData) {
@@ -60,8 +63,9 @@ window.onload = async () => {
         if (typeof updateStepIndicators === "function") {
             updateStepIndicators(1);
         }
-
+        loader.style.display = 'none';
     } catch (erro) {
+        loader.style.display = 'none';
         console.error("Erro na inicialização:", erro);
     }
 };
