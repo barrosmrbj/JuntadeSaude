@@ -145,4 +145,3 @@ function calcularCPF(input) {
     if (erro) erro.innerText = "";
     return true;
 }
-
