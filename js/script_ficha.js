@@ -168,7 +168,7 @@ try {
                
             alert("✅ Ficha salva com sucesso!\nControle(s): " + res.controle.join(", "));
             // 3. Redireciona para a página do roteiro
-            window.location.href = "roteiro.html";
+            window.location.href = "/Roteiro.html";
         } else {
             throw new Error(res.message);
         }
