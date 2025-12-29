@@ -130,7 +130,7 @@ async function salvarFichaCompleta() {
         nacionalidade: CURRENT_DATA?.nacionalidade || "",
 
         // dados coletados no Wizard
-        grupo: document.getElementById("selectGrupo").value || "",
+        grupo: document.getElementById("selectGrupo")?.value || "",
         finalidades: Array.from(selectedFinalidades),
         clinica_restricao: document.getElementById("clinica_restricao")?.value || "",
         data_inicio_restricao: document.getElementById("data_inicio_restricao")?.value || "",
@@ -192,6 +192,12 @@ function cancelarEReiniciar() {
         // Volta para a página inicial
         window.location.href = 'index.html';
     }
+}
+
+// Para a tela de edição (Cadastro.html) levando o CPF
+function EdicaoInspecionando() {
+    const cpf = CURRENT_DATA.cpf;
+    window.location.href = `./Cadastro.html?cpf=${cpf}&modo=edicao`;
 }
 
 function limparCampos() {
