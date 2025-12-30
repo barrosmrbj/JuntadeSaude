@@ -47,7 +47,7 @@ window.onload = async () => {
 
     // 2. Preenche o CPF que já está visível
     const campoCPF = document.getElementById("CampoCPF");
-    if (campoCPF) campoCPF.value = CURRENT_DATA.cpf;
+    if (campoCPF) campoCPF.value = formatarCPF(CURRENT_DATA.cpf);
 
     // 3. Força a exibição do container principal
     const container = document.getElementById("wizardContainer");
@@ -88,6 +88,14 @@ window.onload = async () => {
     console.error("Erro na inicialização:", erro);
   }
 };
+
+function formatarCPF(cpf) {
+    // 1. Remove qualquer coisa que não seja número
+    // 2. Garante que tenha 11 dígitos (padStart)
+    let v = cpf.toString().replace(/\D/g, "").padStart(11, "0");
+    // 3. Aplica a máscara xxx.xxx.xxx-xx
+    return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+}
 
 async function carregarListasParaFicha() {
   try {

@@ -228,14 +228,23 @@ input[readonly] {
 
 .btn-sistema {
     flex: 1;
-    padding: 14px;
+    padding: 15px 5px;
     border-radius: 8px;
     border: none;
     font-weight: bold;
     cursor: pointer;
     text-transform: uppercase;
-    transition: 0.2s;
+    transition: all 0.2s ease;
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Efeito ao passar o mouse */
+.btn-sistema:hover {
+    filter: brightness(1.1);
 }
 
 .btn-voltar { background-color: #636e72; }
@@ -462,4 +471,64 @@ footer {
     .grupo-status-botoes {
         grid-template-columns: repeat(3, 1fr); /* 3 por linha em telas levemente maiores */
     }
+}
+
+/* Responsividade: Em telas muito pequenas (abaixo de 350px), 
+   eles podem empilhar se o texto for muito grande */
+@media (max-width: 350px) {
+    .wizard-buttons {
+        flex-direction: column;
+    }
+    .btn-sistema {
+        width: 100%;
+    }
+}
+
+/* Container da lista de finalidades */
+.finalidade-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.finalidade-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Checkbox alinhado no topo */
+.finalidade-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* Texto da finalidade com truncamento */
+.finalidade-label {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+    white-space: nowrap;      /* Força uma linha só */
+    overflow: hidden;         /* Esconde o que passar */
+    text-overflow: ellipsis;  /* Coloca o "..." */
+    flex-grow: 1;
+    transition: all 0.3s ease;
+}
+
+/* Quando expandido (ao clicar ou hover) */
+.finalidade-item.expandido .finalidade-label {
+    white-space: normal;      /* Deixa o texto quebrar linhas */
+    overflow: visible;
+}
+
+/* Badge (Tag) de finalidade selecionada - Melhoria visual */
+#finalidadesSelecionadasBox span {
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

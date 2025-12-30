@@ -36,6 +36,7 @@ window.irParaFicha = () => {
 function limparCampos(){
     document.getElementById('cpfInput').value = '';
     document.getElementById('resultado').innerHTML = '';
+    document.getElementById('btnPesquisar').disabled = true; // Bloqueia novamente
     document.getElementById('cpfInput').focus();
 }
 

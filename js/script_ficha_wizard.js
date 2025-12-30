@@ -13,7 +13,7 @@ function renderStep1(r) {
             <h3>Dados Encontrados</h3>
                 <strong>COD-ARQV:</strong> ${r.cod || ''} / ${r.arqv || ''}<br>
                 <strong>Nome:</strong> ${r.nome || ''}<br>
-                <strong>CPF:</strong> ${r.cpf || ''}              <strong>SARAM:</strong> ${r.saram || ''}<br>
+                <strong>CPF:</strong> ${formatarCPF(r.cpf) || ''}              <strong>SARAM:</strong> ${r.saram || ''}<br>
                 <strong>RG/Órgão:</strong> ${r.rg || ''} ${r.orgao || ''}<br>
                 <strong>Data Nascimento:</strong> ${r.nascimento || ''} <strong>Naturalidade:</strong> ${r.naturalidade || ''}<br>
                 <strong>Sexo:</strong> ${r.sexo || ''}<br>
@@ -74,31 +74,24 @@ function renderGroupOptions() {
 }
 
 function renderFinalidadesOptions() {
-    //console.log("🔄 renderFinalidadesOptions() iniciado");
-
     const div = document.getElementById("finalidadeList");
-    if (!div) {
-        console.warn("❌ finalidades DIV não encontrada!");
-        return;
-    }
+    if (!div) return;
 
-    div.innerHTML = ""; // limpar lista
-
-    if (!window.APP || !Array.isArray(APP.FINALIDADES_LIST)) {
-        console.warn("❌ APP.FINALIDADES_LIST vazio ou inválido:", APP.FINALIDADES_LIST);
-        return;
-    }
-
-    // reset antes de popular
+    div.innerHTML = ""; 
     selectedFinalidades = new Set();
-
-    //console.log("📌 APP.FINALIDADES_LIST =", APP.FINALIDADES_LIST);
 
     APP.FINALIDADES_LIST.forEach(fin => {
         const id = "fin_" + fin.replace(/\s+/g, "_");
 
         const wrapper = document.createElement("div");
         wrapper.className = "finalidade-item";
+        
+        // Clique no card expande o texto
+        wrapper.onclick = (e) => {
+            if (e.target.type !== 'checkbox') {
+                wrapper.classList.toggle('expandido');
+            }
+        };
 
         const cb = document.createElement("input");
         cb.type = "checkbox";
@@ -107,59 +100,45 @@ function renderFinalidadesOptions() {
 
         const lbl = document.createElement("label");
         lbl.htmlFor = id;
+        lbl.className = "finalidade-label";
         lbl.textContent = fin;
+        lbl.title = "Clique para ler o texto completo"; // Dica ao passar o mouse
 
         wrapper.appendChild(cb);
         wrapper.appendChild(lbl);
         div.appendChild(wrapper);
 
-        /* ---------------------------
-        PRÉ-SELEÇÃO PELO CPF buscado
-        --------------------------- */
+        // Lógica de pré-seleção mantida...
         if (CURRENT_DATA && CURRENT_DATA.finalidade) {
-            let finals = CURRENT_DATA.finalidade;
-
-            if (!Array.isArray(finals)) finals = [finals];
-
+            let finals = Array.isArray(CURRENT_DATA.finalidade) ? CURRENT_DATA.finalidade : [CURRENT_DATA.finalidade];
             finals = finals.map(f => f.toString().trim().toLowerCase());
-
             if (finals.includes(fin.toString().trim().toLowerCase())) {
                 cb.checked = true;
                 selectedFinalidades.add(fin);
-                console.log(`✔ Pré-selecionada: "${fin}"`);
             }
         }
 
-        /* ---------------------------
-        Handler: limite de 3
-        --------------------------- */
-        cb.addEventListener("change", () => {
-
+        // Listener do Checkbox
+        cb.addEventListener("change", (e) => {
             if (cb.checked) {
                 if (selectedFinalidades.size >= 3) {
                     cb.checked = false;
-                    console.log(`❌ Tentou selecionar mais de 3. Ignorado: ${fin}`);
-                    toast("Você pode selecionar no máximo 3 finalidades.", "red");
+                    // Uso do seu toast
+                    if(typeof toast === "function") toast("Máximo de 3 finalidades.", "red");
+                    else alert("Máximo de 3 finalidades.");
                     return;
                 }
                 selectedFinalidades.add(fin);
-                console.log(`🟢 Selecionada: ${fin}`);
             } else {
                 selectedFinalidades.delete(fin);
-                console.log(`🔴 Removida: ${fin}`);
             }
-
             atualizarFinalidadesSelecionadas();
-            console.log("📌 Finalidades atuais:", Array.from(selectedFinalidades));
             checkConditionalSteps();
         });
     });
-
-    //console.log("📌 Finalidades pré-selecionadas no carregamento:", Array.from(selectedFinalidades));
-
-    checkConditionalSteps(); // garantir estado inicial correto
-
-    //console.log("✅ renderFinalidadesOptions() finalizado");
+    
+    atualizarFinalidadesSelecionadas(); // Garante que as badges apareçam se houver pré-seleção
+    checkConditionalSteps();
 }
 
 /* =====================================================================
@@ -224,44 +203,48 @@ function applyFinalidadesRules() {
 function goToStep(n) {
     console.log("Tentando ir para o passo:", n);
     
-    // 1. Validação de Regras G e I antes de mudar
+    // 1. Validação de Regras G e I
     const selecionadas = Array.from(selectedFinalidades).map(f => f.toUpperCase());
     const anyG = selecionadas.some(f => f.startsWith("G"));
     const anyI = selecionadas.some(f => f.startsWith("I"));
 
-    // Lógica de Salto (Avanço)
+    // --- LÓGICA DE SALTO (AVANÇO) ---
+    // Se o usuário está no Passo 2 e quer avançar
     if (CURRENT_STEP === 2 && n > 2) {
-        if (!anyG && anyI) n = 4;      // Pula JSS, vai p/ Curso
-        else if (!anyG && !anyI) n = 5; // Pula ambos, vai p/ Concluir
+        if (anyG) n = 3;               // Tem G? Vai para o 3 obrigatoriamente
+        else if (anyI) n = 4;          // Não tem G, mas tem I? Pula o 3 e vai pro 4
+        else n = 5;                    // Não tem nenhum? Vai pro final (Concluir)
     }
-    // Lógica de Salto (Recuo)
-    if (n < CURRENT_STEP) {
-        if (n === 4 && !anyI) n = 3; 
-        if (n === 3 && !anyG) n = 2;
+    
+    // CORREÇÃO CRÍTICA: Se o usuário está no Passo 3 (Restrição) e quer avançar
+    if (CURRENT_STEP === 3 && n > 3) {
+        if (!anyI) n = 5;              // Se NÃO tem finalidade "I", pula o 4 e vai direto pro 5 (Concluir)
     }
 
-    // 2. Esconde TODOS os passos
+    // --- LÓGICA DE SALTO (RECUO) ---
+    if (n < CURRENT_STEP) {
+        if (n === 4 && !anyI) n = 3;   // Se voltando do 5 e não tem I, pula pro 3
+        if (n === 3 && !anyG) n = 2;   // Se voltando do 4/5 e não tem G, pula pro 2
+    }
+
+    // 2. Execução da troca de tela (Mantendo seu código de visibilidade)
     document.querySelectorAll('.wizard-step').forEach(el => {
         el.style.display = 'none';
         el.style.opacity = '0';
         el.classList.remove('active-step');
     });
 
-    // 3. Mostra o passo de destino
     const target = document.getElementById(`step-${n}`);
     if (target) {
         target.style.display = 'block';
-        // Pequeno timeout para a transição de opacidade funcionar
         setTimeout(() => { 
             target.style.opacity = '1'; 
             target.classList.add('active-step');
         }, 10);
         
         CURRENT_STEP = n;
-        updateStepIndicators(n); // Atualiza as bolinhas no topo
+        updateStepIndicators(n); 
         window.scrollTo(0,0);
-    } else {
-        console.error("Erro: Passo não encontrado no HTML: step-" + n);
     }
 }
 
@@ -307,15 +290,20 @@ function updateStepIndicators(n) {
 
 function atualizarFinalidadesSelecionadas() {
     const box = document.getElementById("finalidadesSelecionadasBox");
+    const btnProximo = document.getElementById("btnProximoStep2"); // Captura o botão
     box.innerHTML = ""; // limpa
 
     if (selectedFinalidades.size === 0) {
         box.innerHTML = `<span style="color:#777; font-size:13px;">
             Nenhuma finalidade selecionada.
         </span>`;
+        if (btnProximo) btnProximo.disabled = true; // Trava o botão se estiver vazio
         return;
     }
 
+    // Se chegou aqui, há pelo menos uma finalidade selecionada
+    if (btnProximo) btnProximo.disabled = false; // Liberta o botão
+    
     selectedFinalidades.forEach(fin => {
         const tag = document.createElement("span");
         tag.style.cssText = `

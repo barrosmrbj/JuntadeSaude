@@ -273,7 +273,7 @@ function gerarCamposEspecificos(v) {
 
   if (v === "AERONAUTICA") {
     html += `
-                <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text"></div>
+                <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text" maxlength="7"></div>
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
                 <div class="linha-campos-dupla">
                     <div class="linha-campo campo-metade"><label>Posto</label><input id="cadPosto" type="text" list="lista-postos"></div>
@@ -286,13 +286,13 @@ function gerarCamposEspecificos(v) {
     html += `
                 <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="VA - DEP MIL / PENSIONISTAS" style="text-align: center" readonly></div>
                 <div class="linha-campo"><label>Posto</label><input id="cadPosto" value="Dependente" style="text-align: center" readonly></div>
-                <div class="linha-campo"><label>SARAM do Responsável (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
+                <div class="linha-campo"><label>SARAM do Responsável (7 dígitos)</label><input id="cadSaram" style="text-align: center" maxlength="7"></div>
             `;
   } else if (v === "PENSIONISTAS") {
     html += `
                 <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="VA - DEP MIL / PENSIONISTAS" style="text-align: center" readonly></div>
                 <div class="linha-campo"><label>Posto</label><input id="cadPosto" value="Pensionista" style="text-align: center" readonly></div>
-                <div class="linha-campo"><label>SARAM do Responsável (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
+                <div class="linha-campo"><label>SARAM do Responsável (7 dígitos)</label><input id="cadSaram" style="text-align: center" maxlength="7"></div>
             `;
   }
 
@@ -307,7 +307,7 @@ function gerarCamposEspecificos(v) {
             `;
   } else if (v === "EMPRESA") {
     html += `
-                <div class="linha-campo"><label>Matrícula (7 dígitos)</label><input id="cadSaram" style="text-align: center"></div>
+                <div class="linha-campo"><label>Matrícula (7 dígitos)</label><input id="cadSaram" style="text-align: center" maxlength="7"></div>
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
                 <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="III - Servidores CIVIS" style="text-align: center" readonly></div>
             `;

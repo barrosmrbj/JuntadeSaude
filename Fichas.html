@@ -84,19 +84,22 @@
                     </div>
 
                     <!-- BADGES DAS FINALIDADES SELECIONADAS -->
-                    <div id="finalidadesSelecionadasBox" style="margin: 10px 0; display:flex; gap:8px; flex-wrap:wrap;">
-                    </div>
+                     <div id="finalidadesSelecionadasBox" style="margin: 10px 0; display:flex; gap:8px; flex-wrap:wrap;">
+                            </div>
+                     <div class="grupo-container" style="margin-top:15px; border: 1px solid #ddd; border-radius: 8px; padding: 15px;">
 
-                    <div style="margin-top:10px;">
-                        <label><strong>Finalidade (máx. 3)</strong></label>
-                        <div id="finalidadeList" style="margin-top:6px; max-height:220px; overflow:auto;"></div>
-                    </div>
+                            
 
+                            <div style="margin-top:10px;">
+                                <label><strong>Finalidade (máx. 3)</strong></label>
+                                <div id="finalidadeList" style="margin-top:6px; max-height:220px; overflow:auto;"></div>
+                            </div>
+                     </div>
                 </div>
 
                 <div class="wizard-buttons">
                     <button class="btn-sistema btn-voltar" onclick="goToStep(1)">Anterior</button>
-                    <button class="btn-sistema btn-secundario"  onclick="goToStep(3)">Próximo</button>
+                    <button class="btn-sistema btn-secundario" id="btnProximoStep2" onclick="goToStep(3)" disabled>Próximo</button>
                 </div>
             </div>
 
@@ -169,7 +172,7 @@
                 </div>
 
                 <div class="wizard-buttons">
-                    <button class="btn-sistema btn-voltar" onclick="goToStep(getPreviousStep())">Anterior</button>
+                    <button class="btn-sistema btn-voltar" onclick="goToStep(3)">Anterior</button>
                     <button class="btn-sistema btn-secundario" onclick="goToStep(5)">Próximo</button>
                 </div>
             </div>
