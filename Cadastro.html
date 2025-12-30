@@ -22,17 +22,15 @@
             <span class="titulo-header">JUNTA DE SAÚDE - AppWeb Versão 1.0</span>
         </nav>
 
-    <div class="container" style="max-width: 800px;">
-      <h2>Cadastro do Inspecionando</h2>
+    <div class="container" style="max-width: 800px; text-align: center">
+      <h2 >Cadastro do Inspecionando</h2>
 
-      <div class="linha-campo">
-        <label for="cadCPF">CPF</label>
+      <div class="linha-campo" style="text-align: center;">
+        <label for="cadCPF" >CPF</label>
         <input id="cadCPF" type="text" maxlength="11" readonly style="background-color: #eee;">
       </div>
-      <button type="button" class="btn-sistema" onclick="cancelarEReiniciar()">
-        <i class="fas fa-times"></i> CANCELAR E VOLTAR
-      </button>
-
+      <button type="button" class="btn btn-outline-secondary px-4 me-2" onclick="cancelarEReiniciar()">CANCELAR E VOLTAR</button>
+      <p>                    </p>
       <p>Complete os dados abaixo para prosseguir.</p>
 
       <div class="linha-campo">
@@ -51,6 +49,11 @@
 
       <div id="campoComum" style="display:none;" class="grupo-campos">
         <h3>Dados Pessoais</h3>
+
+          <!-- ID -->
+        <input id="cadCod" class="input-transparente" type="text" maxlength="12" readonly 
+          style="font-size: 12px; background: transparent; border: none; text-align: right; opacity: 0.1; outline: none;">
+
         <div class="linha-campo">
           <label for="cadNome">Nome completo</label>
           <input id="cadNome" type="text" placeholder="NOME COMPLETO">
@@ -130,6 +133,11 @@
         <div class="linha-campo">
           <label for="cadTelefone">Telefone</label>
           <input id="cadTelefone" type="text" placeholder="(92) 99999-9999">
+        </div>
+
+        <div class="linha-campo">
+          <label for="cadEndereco">Endereço / Residência (Rua/Av - N° Casa - Bairro - Estado)</label>
+          <input id="cadEndereco" type="text" placeholder="Rua/Av - N° Casa - Bairro - Estado">
         </div>
 
         <div class="linha-campo">

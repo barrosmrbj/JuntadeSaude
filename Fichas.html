@@ -20,15 +20,14 @@
             <span class="titulo-header">JUNTA DE SAÚDE - AppWeb Versão 1.0</span>
         </nav>
 
-        <div class="container">
+        <div class="container" style="text-align: center">
             <div class="header-fichas" style="text-align: center; margin-bottom: 20px;"></div>
             <div class="linha-campo linha-campo-cpf" style="max-width: 400px; margin: 0 auto 20px;">
                 <label for="CampoCPF">CPF (Inspecionando)</label>
                 <input id="CampoCPF" type="text" maxlength="11" readonly class="input-desabilitado">
             </div>
-            <button type="button" class="btn-sistema" onclick="cancelarEReiniciar()">
-                <i class="fas fa-times"></i> CANCELAR E VOLTAR
-            </button>
+            <button type="button" class="btn btn-outline-secondary px-4 me-2" onclick="cancelarEReiniciar()">CANCELAR E VOLTAR</button>
+            <p>                    </p>
         </div>
 
          <!-- WIZARD CONTAINER -->
@@ -66,7 +65,7 @@
             <div id="step-1" class="wizard-step" style="opacity: 1; display: block;">
                 <div id="resultadoConsulta"></div>
                 <div class="wizard-buttons">
-                    <button class="btn-sistema btn-voltar" id="btnEdicao" onclick="EdicaoInspecionando()">Editar
+                    <button class="btn-sistema btn-voltar" id="btnEdicao" onclick="EditarInspecionando()">Editar
                         Cadastro</button>
                     <button class="btn-sistema btn-secundario" id="toStep2" onclick="goToStep(2)">Continuar</button>
                 </div>
@@ -96,8 +95,8 @@
                 </div>
 
                 <div class="wizard-buttons">
-                    <button class="btn-sistema btn-secundario" onclick="goToStep(1)">Anterior</button>
-                    <button class="btn-sistema" onclick="goToStep(3)">Próximo</button>
+                    <button class="btn-sistema btn-voltar" onclick="goToStep(1)">Anterior</button>
+                    <button class="btn-sistema btn-secundario"  onclick="goToStep(3)">Próximo</button>
                 </div>
             </div>
 
@@ -145,8 +144,8 @@
                 </div>
 
                 <div class="wizard-buttons">
-                    <button class="btn-sistema btn-secundario" onclick="goToStep(2)">Anterior</button>
-                    <button class="btn-sistema" onclick="goToStep(4)">Próximo</button>
+                    <button class="btn-sistema btn-voltar" onclick="goToStep(2)">Anterior</button>
+                    <button class="btn-sistema btn-secundario" onclick="goToStep(4)">Próximo</button>
                 </div>
             </div>
 
@@ -170,8 +169,8 @@
                 </div>
 
                 <div class="wizard-buttons">
-                    <button class="btn-sistema btn-secundario" onclick="goToStep(getPreviousStep())">Anterior</button>
-                    <button class="btn-sistema" onclick="goToStep(5)">Próximo</button>
+                    <button class="btn-sistema btn-voltar" onclick="goToStep(getPreviousStep())">Anterior</button>
+                    <button class="btn-sistema btn-secundario" onclick="goToStep(5)">Próximo</button>
                 </div>
             </div>
 
@@ -190,8 +189,7 @@
                         </ul>
                     </div>
 
-                    <div
-                        style="background: #f0f4f8; padding: 15px; border-radius: 8px; border: 1px solid #d1d9e0; display: flex; align-items: center; justify-content: center; margin: 20px auto; max-width: 500px;">
+                    <div style="background: #f0f4f8; padding: 15px; border-radius: 8px; border: 1px solid #d1d9e0; display: flex; align-items: center; justify-content: center; margin: 20px auto; max-width: 500px;">
                         <input type="checkbox" id="consentCheckbox" style="width: 20px; height: 20px; cursor: pointer;">
                         <label for="consentCheckbox"
                             style="cursor:pointer; margin-left:12px; font-weight: bold; color: #2c3e50;">
@@ -200,10 +198,9 @@
                     </div>
                 </div>
 
-                <div class="wizard-buttons" style="margin-top: 20px;">
-                    <button class="btn-sistema btn-secundario" id="btnAnterior" onclick="goToStep(getPreviousStep())">Anterior</button>
-                    <button class="btn-sistema btn-sucesso" id="btnSalvarFinal" onclick="salvarFichaCompleta()"
-                        disabled>
+                <div class="wizard-buttons">
+                    <button class="btn-sistema btn-voltar" id="btnAnterior" onclick="goToStep(getPreviousStep())">Anterior</button>
+                    <button class="btn-sistema" id="btnSalvarFinal" onclick="salvarFichaCompleta()" disabled>
                         <i class="fas fa-save"></i> Salvar Ficha Final
                     </button>
                 </div>

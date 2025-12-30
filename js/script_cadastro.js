@@ -16,7 +16,7 @@ window.onload = async () => {
     // Preenche o CPF e mantém readonly
     if (cpfUrl) {
       const fieldCPF = document.getElementById("cadCPF");
-      fieldCPF.value = cpfUrl;
+      fieldCPF.value = formatarCPF(cpfUrl);
     }
 
     configurarBotoesVinculo();
@@ -38,6 +38,14 @@ window.onload = async () => {
     loader.style.display = "none";
   }
 };
+
+function formatarCPF(cpf) {
+    // 1. Remove qualquer coisa que não seja número
+    // 2. Garante que tenha 11 dígitos (padStart)
+    let v = cpf.toString().replace(/\D/g, "").padStart(11, "0");
+    // 3. Aplica a máscara xxx.xxx.xxx-xx
+    return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+}
 
 async function carregarDadosParaEdicao(cpf) {
   console.log("Carregando dados para edição do CPF:", cpf);
@@ -63,6 +71,7 @@ async function carregarDadosParaEdicao(cpf) {
       console.log(dados.vinculo); //TA DANDO ERRO AQUI undefined
 
       // 2. Preenche Dados Pessoais (Mapeando IDs do seu HTML)
+      document.getElementById("cadCod").value = dados.cod || "";
       document.getElementById("cadNome").value = dados.nome || "";
       document.getElementById("cadRG").value = dados.rg || "";
       document.getElementById("cadORGAO").value = dados.orgao || "";
@@ -72,6 +81,7 @@ async function carregarDadosParaEdicao(cpf) {
       document.getElementById("cadNaturalidade").value =
         dados.naturalidade || "";
       document.getElementById("cadSexo").value = dados.sexo || "";
+      document.getElementById("cadEndereco").value = dados.endereco || "";
       document.getElementById("cadEmail").value = dados.email || "";
       document.getElementById("cadTelefone").value = dados.telefone || "";
       document.getElementById("cadTpSang").value = dados.tp_sang || "";
@@ -112,6 +122,20 @@ async function finalizarAtualizacao() {
     const loader = document.getElementById("loader");
     loader.style.display = "flex";
 
+    // 2. Validação de campos obrigatórios (considerando exceções)
+    if (!validarFormulario()) {
+      alert("Preencha todos os campos obrigatórios (marcados em vermelho).");
+      return;
+    }
+
+    // 3. Validação final do E-mail
+    const campoEmail = document.getElementById("cadEmail");
+    if (!validarEmail(campoEmail)) {
+      alert("O e-mail informado é inválido.");
+      campoEmail.focus();
+      return;
+    }
+
     try {
         // 1. Captura o vínculo selecionado (ajuste a classe se não for .ativo)
         const btnAtivo = document.querySelector("#btnVinculo button.ativo");
@@ -119,6 +143,7 @@ async function finalizarAtualizacao() {
 
         // 2. Monta o objeto com as IDs do seu Cadastro.html
         const dados = {
+            cod: document.getElementById("cadCod").value || "", // Mantém o código original
             cpf: document.getElementById("cadCPF").value, // Key principal
             nome: document.getElementById("cadNome").value.toUpperCase(),
             rg: document.getElementById("cadRG").value,
@@ -131,6 +156,7 @@ async function finalizarAtualizacao() {
             tp_sang: document.getElementById("cadTpSang").value,
             cor: document.getElementById("cadCor").value,
             nacionalidade: document.getElementById("cadNacionalidade").value,
+            endereco: document.getElementById("cadEndereco")?.value || "",
             vinculo: vinculoSelecionado,
             // Campos Militares/Específicos
             grupo: document.getElementById("cadGrupo")?.value || "",
@@ -138,30 +164,25 @@ async function finalizarAtualizacao() {
             posto: document.getElementById("cadPosto")?.value || "",
             om: document.getElementById("cadOM")?.value || "",
             quadro: document.getElementById("cadQuadro")?.value || "",
-            especialidade: document.getElementById("cadEsp")?.value || ""
+            senha: document.getElementById("cadCPF").value.substring(0, 4), // Mantém a senha inicial
+            especialidade: document.getElementById("cadEspecialidade")?.value || ""
         };
-
-        // Validação simples
-        if (!dados.nome || !dados.vinculo) {
-            alert("Por favor, preencha o Nome e selecione o Vínculo.");
-            loader.style.display = "none";
-            return;
-        }
 
         // 3. Envio para o GAS
         const params = new URLSearchParams({
-            action: "atualizarCadastroInspecionando",
+            action: "atualizarCadastroNoBanco",
             dados: JSON.stringify(dados)
         });
 
         const resp = await fetch(`${API_URL_GAS}?${params.toString()}`);
-        const res = await resp.json();
+        const textResponse = await resp.text();
+        const res = JSON.parse(textResponse);
 
         if (res.success) {
             alert(`✅ Atualizado com Sucesso!\nCódigo: ${res.cod}`);
             
-            // 4. Redireciona para Fichas.html já passando o CPF para abrir os dados novos
-            window.location.href = `./Fichas.html?cpf=${dados.cpf}`;
+            // O segredo está em passar o CPF na URL para a Fichas.html saber quem carregar
+            window.location.href = `./Fichas.html?cpf=${dados.cpf}&refresh=${Date.now()}`;
         } else {
             alert("❌ Erro ao atualizar: " + res.message);
         }
@@ -223,7 +244,7 @@ function validarEmail(input) {
 
 function validarFormulario() {
   // IDs que NÃO são obrigatórios (mesmo se estiverem visíveis)
-  const excessoes = ["cadSaram", "cadEspecialidade", "cadQuadro", "cadORGAO"];
+  const excessoes = ["cadCod","cadSaram", "cadEspecialidade", "cadQuadro", "cadORGAO"];
 
   const campos = document.querySelectorAll("input, select");
   let valido = true;
@@ -234,6 +255,7 @@ function validarFormulario() {
       if (!campo.value || campo.value === "" || campo.value.includes("---")) {
         campo.classList.add("invalido");
         valido = false;
+        console.log("Campo inválido:", campo.id);
       } else {
         campo.classList.remove("invalido");
       }
@@ -354,6 +376,7 @@ async function salvar() {
     tp_sang: document.getElementById("cadTpSang").value,
     cor: document.getElementById("cadCor").value,
     nacionalidade: document.getElementById("cadNacionalidade").value,
+    endereco: document.getElementById("cadEndereco").value,
     vinculo: vinculoSelecionado,
 
     // Campos dinâmicos (usam ?. para evitar erro se o campo não estiver na tela)

@@ -353,6 +353,8 @@ function atualizarFinalidadesSelecionadas() {
 document.addEventListener('change', function(e) { 
     if (e.target && e.target.id === 'consentCheckbox') {
         const btn = document.getElementById('btnSalvarFinal');
+        // Se o checkbox estiver marcado, remove o 'disabled', senão adiciona.
         if (btn) btn.disabled = !e.target.checked;
     }
 });
+

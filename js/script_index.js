@@ -97,19 +97,28 @@ document.getElementById('cpfInput').addEventListener('keyup', (e) => {
 
 function calcularCPF(input) {
     let cpf = (input.value || "").toString().replace(/\D/g, "");
-    input.value = cpf; // mantém só números no campo
+    input.value = cpf; // mantém só números
+    
     const erro = document.getElementById("CampoCPF-error");
+    const btnPesquisar = document.getElementById("btnPesquisar");
 
-    // Configura a cor vermelha caso o elemento exista
+    // Função interna para bloquear o botão e mostrar erro
+    const invalidar = (msg) => {
+        if (erro) erro.innerText = msg;
+        if (btnPesquisar) btnPesquisar.disabled = true;
+        return false;
+    };
+
+    // Estilo do erro
     if (erro) {
         erro.style.color = "red";
-        erro.style.fontSize = "12px"; // Opcional: ajusta o tamanho para não quebrar o layout
-        erro.style.fontWeight = "bold"; // Opcional: destaca o erro
-    }    
+        erro.style.fontSize = "12px";
+        erro.style.fontWeight = "bold";
+    }
 
+    // 1. Validação de Tamanho
     if (cpf.length < 11) {
-        if (erro) erro.innerText = "CPF incompleto.";
-        return false;
+        return invalidar("CPF incompleto.");
     }
 
     if (cpf.length > 11) {
@@ -117,17 +126,16 @@ function calcularCPF(input) {
         return false;
     }
 
-    // Elimina CPFs repetidos
+    // 2. Elimina CPFs repetidos (Ex: 111.111...)
     if (/^(\d)\1{10}$/.test(cpf)) {
-        if (erro) erro.innerText = "CPF inválido.";
-        return false;
+        return invalidar("CPF inválido.");
     }
 
-    // Função para cálculo dos dígitos verificadores
+    // 3. Algoritmo de Cálculo dos Dígitos
     function calcDV(base, fator) {
         let total = 0;
         for (let i = 0; i < base.length; i++) {
-        total += parseInt(base[i], 10) * (fator - i);
+            total += parseInt(base[i], 10) * (fator - i);
         }
         let resto = (total * 10) % 11;
         return resto === 10 ? 0 : resto;
@@ -137,11 +145,11 @@ function calcularCPF(input) {
     const dv2 = calcDV(cpf.slice(0, 10), 11);
 
     if (dv1 !== parseInt(cpf[9], 10) || dv2 !== parseInt(cpf[10], 10)) {
-        if (erro) erro.innerText = "CPF inválido.";
-        return false;
+        return invalidar("CPF inválido.");
     }
 
-    // CPF válido
+    // 4. CPF VÁLIDO: Limpa erro e habilita o botão
     if (erro) erro.innerText = "";
+    if (btnPesquisar) btnPesquisar.disabled = false;
     return true;
 }

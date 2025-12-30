@@ -2,30 +2,36 @@
    1. RESET E ESTRUTURA BASE (LAYOUT LIMPO)
    ===================================================================== */
 * {
-    box-sizing: border-box;    margin: 0;    padding: 0;    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent;
 }
 
+:root {
+    --primary-color: #2477d0;
+    --militar-green: #27ae60;
+    --militar-dark: #2c3e50;
+    --danger-color: #c0392b;
+    --shadow-3d: 0 4px 0 #bdc3c7;
+    --shadow-3d-active: 0 2px 0 #1a528d;
+}
 body {
     background-color: #2c3e50;
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: auto;
+    min-height: 100vh;
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* CONTAINER APP (O QUE VOCÊ VÊ EM BRANCO) */
 #tela-consulta, #wizardContainer, .container-principal {
     width: 100%;
     max-width: 450px;
     background: #ffffff;
-    /* Alterado de 100vh para auto para o container abraçar o conteúdo */
     min-height: auto; 
     display: flex;
     flex-direction: column;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    margin: 10px auto; /* Adiciona uma margem superior para não colar no topo */
-    border-radius: 12px; /* Arredonda levemente para um visual mais moderno */
+    margin: 10px auto;
+    border-radius: 12px;
     overflow: hidden;
 }
 
@@ -81,6 +87,66 @@ input[readonly] {
     font-weight: bold;
     text-align: center;
     margin-bottom: 10px;
+}
+/* =====================================================================
+   2. LAYOUT TRIPLO (Posto, Quadro, Especialidade) - NOVO & VALIDADO
+   ===================================================================== */
+.linha-campos-dupla {
+    display: flex;
+    gap: 10px;
+    width: 90%;
+    margin: 0 auto;
+    flex-wrap: wrap; /* Garante que em telas muito pequenas ele quebre */
+}
+.campo-metade {
+    flex: 1;
+    min-width: 100px; /* Evita que fiquem ilegíveis */
+}
+
+.campo-metade label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.campo-metade input {
+    width: 100% !important;
+    margin: 0 !important; /* Remove margens automáticas para alinhar */
+}
+/* =====================================================================
+   3. BOTÕES DE VÍNCULO (ESTILO 3D) - NOVO & VALIDADO
+   ===================================================================== */
+.grupo-status-botoes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 por linha no mobile */
+    gap: 12px;
+    width: 90%;
+    margin: 15px auto;
+}
+
+.grupo-status-botoes button {
+    background: #fdfdfd;
+    border: 2px solid #d1d8e0;
+    border-radius: 10px;
+    padding: 12px 5px;
+    font-weight: 800;
+    color: #2c3e50;
+    box-shadow: 0 4px 0 #d1d8e0; /* Efeito 3D */
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+/* Estado Ativo (Clicado) */
+.grupo-status-botoes button.ativo {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border-color: #1a528d;
+    box-shadow: 0 2px 0 #1a528d !important;
+    transform: translateY(2px); /* Afunda o botão */
 }
 
 /* =====================================================================
@@ -150,25 +216,88 @@ input[readonly] {
     opacity: 1;
 }
 
-/* BOTÕES ESTILO APP */
+/* =====================================================================
+   5. BOTÕES DO SISTEMA E CANCELAR
+   ===================================================================== */
 .wizard-buttons {
     display: flex;
     gap: 15px;
-    margin-top: 20px;
+    width: 90%;
+    margin: 20px auto;
 }
 
 .btn-sistema {
     flex: 1;
-    padding: 12px;
+    padding: 14px;
     border-radius: 8px;
     border: none;
     font-weight: bold;
     cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.2s;
+    color: white;
 }
-.btn-secundario { background-color: #636e72; }
-.btn-sucesso { background-color: #27ae60; }
-.btn-cancelar { background-color: #c0392b; width: 90%; margin: 10px auto; }
 
+.btn-voltar { background-color: #636e72; }
+.btn-secundario { background-color: var(--primary-color); }
+.btn-sucesso { background-color: var(--militar-green); }
+
+/* Botão Cancelar Centralizado e Responsivo */
+.container-cancelar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+.btn-cancelar {
+    background-color: #d32f2f !important; /* Vermelho vibrante */
+    color: white !important;
+    width: 90%;
+    margin: 0 auto;
+    font-size: 14px;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #b71c1c;
+}
+
+.btn-cancelar:hover {
+    background-color: #b71c1c !important;
+}
+
+/* Botão Salvar Ficha Final - Com estado Desabilitado */
+#btnSalvarFinal {
+    background-color: #27ae60; /* Verde sucesso */
+    color: white;
+    transition: all 0.3s ease;
+}
+
+/* Quando o botão está desabilitado (Termos não aceitos) */
+#btnSalvarFinal:disabled {
+    background-color: #bdc3c7 !important; /* Cinza */
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    opacity: 0.7;
+}
+
+#btnEdicao {
+    background-color: #f39c12 !important; /* Laranja (Atenção/Edição) */
+    color: white !important;
+    box-shadow: 0 4px 0 #d35400; /* Efeito 3D em laranja escuro */
+}
+
+#btnEdicao:hover {
+    background-color: #e67e22 !important;
+}
+
+#btnEdicao.ativo {
+    box-shadow: 0 2px 0 #d35400 !important;
+    transform: translateY(2px);
+}
 /* =====================================================================
    6. FOOTER (FIXADO NO FINAL DO CONTAINER BRANCO)
    ===================================================================== */
@@ -324,4 +453,13 @@ footer {
     height: 100%;
     background: linear-gradient(90deg, #27ae60, #2ecc71);
     transition: width 0.4s ease;
+}
+
+/* =====================================================================
+   6. RESPONSIVIDADE ADICIONAL
+   ===================================================================== */
+@media (min-width: 400px) {
+    .grupo-status-botoes {
+        grid-template-columns: repeat(3, 1fr); /* 3 por linha em telas levemente maiores */
+    }
 }
