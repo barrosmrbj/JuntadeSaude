@@ -48,7 +48,7 @@ function renderizarRoteiro() {
 
     // 1. Setores Fixos
     const setoresFixos = ["LABORATÓRIO", "COPA", "RAIO-X", "ODONTOLOGIA", "AUDIOMETRIA", 
-                          "OTORRINO", "OFTALMOLOGIA", "CLÍNICA MÉDICA", "NEUROLOGIA", "PSIQUIATRIA"];
+                          "OTORRINO", "OFTALMOLOGIA", "CLÍNICA MÉDICA", "CARDIOLOGIA", "NEUROLOGIA", "PSIQUIATRIA"];
     
     let meusSetores = [];
 
