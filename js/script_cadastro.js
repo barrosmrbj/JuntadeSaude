@@ -303,7 +303,7 @@ function gerarCamposEspecificos(v) {
                     <div class="linha-campo campo-metade"><label>Posto</label><input id="cadPosto" type="text" list="lista-postos"></div>
                     <div class="linha-campo campo-metade"><label>Especialidade</label><input id="cadEspecialidade" style="text-align: center" list="lista-esp"></div>
                 </div>
-                <div class="linha-campo"><label for="cadGrupo">Grupo</label><input id="cadGrupo" type="text" list="lista-grupos"></div> 
+                <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="IB - AERONAVEGANTES INCLUSOS EM QT" style="text-align: center" readonly></div>  
             `;
   } else if (v === "EMPRESA") {
     html += `
@@ -324,7 +324,7 @@ function gerarCamposEspecificos(v) {
     html += `
                 <div class="linha-campo"> <label for="cadOM">OM VÍCULO</label> <input id="cadOM" value="SEREP-MN" style="text-align: center" readonly> </div>
                 <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="VB - CIVIS (CONCURSO)" style="text-align: center" readonly></div>
-                <div class="linha-campo"><label>Posto</label><input id="cadPosto" value="Proc_Seletivo" style="text-align: center" readonly></div>
+                <div class="linha-campo"><label>Posto</label><input id="cadPosto" value="CONVOCADO" style="text-align: center" readonly></div>
             `;
   } else if (v === "RECRUTA") {
     html += `
