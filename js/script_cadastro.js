@@ -309,7 +309,7 @@ function gerarCamposEspecificos(v) {
     html += `
                 <div class="linha-campo"><label>Matrícula (7 dígitos)</label><input id="cadSaram" style="text-align: center" maxlength="7"></div>
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
-                <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="III - Servidores CIVIS" style="text-align: center" readonly></div>
+                <div class="linha-campo"><label>Grupo</label><input id="cadGrupo" value="IVB - Civil ATCO / OEA" style="text-align: center" readonly></div>
             `;
   } else if (v === "CONCURSO") {
     html += `
