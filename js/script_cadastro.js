@@ -51,6 +51,7 @@ async function carregarDadosParaEdicao(cpf) {
   console.log("Carregando dados para edição do CPF:", cpf);
   const loader = document.getElementById("loader");
   loader.style.display = "flex";
+  
   try {
     const resp = await fetch(`${API_URL_GAS}?action=buscarCPF&cpf=${cpf}`);
     const resJSON = await resp.json(); // Renomeei para resJSON para não confundir
