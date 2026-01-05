@@ -48,7 +48,7 @@ function formatarCPF(cpf) {
 }
 
 async function carregarDadosParaEdicao(cpf) {
-  
+
   console.log("Carregando dados para edição do CPF:", cpf);
   const loader = document.getElementById("loader");
   loader.style.display = "flex";
@@ -97,6 +97,8 @@ async function carregarDadosParaEdicao(cpf) {
           document.getElementById("cadPosto").value = dados.posto || "";
         if (document.getElementById("cadOM"))
           document.getElementById("cadOM").value = dados.om || "";
+        if (document.getElementById("cadDt_praca"))
+          document.getElementById("cadDt_praca").value = dados.dt_praca || "";
         if (document.getElementById("cadQuadro"))
           document.getElementById("cadQuadro").value = dados.quadro || "";
         if (document.getElementById("cadEspecialidade"))
@@ -165,6 +167,7 @@ async function finalizarAtualizacao() {
             saram: document.getElementById("cadSaram")?.value || "",
             posto: document.getElementById("cadPosto")?.value || "",
             om: document.getElementById("cadOM")?.value || "",
+            dt_praca: document.getElementById("cadDt_praca")?.value || "",
             quadro: document.getElementById("cadQuadro")?.value || "",
             senha: document.getElementById("cadCPF").value.substring(0, 4), // Mantém a senha inicial
             especialidade: document.getElementById("cadEspecialidade")?.value || ""
@@ -277,6 +280,7 @@ function gerarCamposEspecificos(v) {
     html += `
                 <div class="linha-campo"><label>SARAM/Ordem</label><input id="cadSaram" type="text" maxlength="7"></div>
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
+                <div class="linha-campo"><label>DATA DE PRAÇA</label><input id="cadDt_praca" type="date"></div>
                 <div class="linha-campos-dupla">
                     <div class="linha-campo campo-metade"><label>Posto</label><input id="cadPosto" type="text" list="lista-postos"></div>
                     <div class="linha-campo campo-metade"><label>Quadro</label><input id="cadQuadro" style="text-align: center" list="lista-quadro"></div>
@@ -301,6 +305,7 @@ function gerarCamposEspecificos(v) {
   if (v === "EXERCITO") {
     html += `
                 <div class="linha-campo"><label>OM</label><input id="cadOM" type="text" list="lista-oms"></div>
+                <div class="linha-campo"><label>DATA DE PRAÇA</label><input id="cadDt_praca" type="date"></div>
                 <div class="linha-campos-dupla">
                     <div class="linha-campo campo-metade"><label>Posto</label><input id="cadPosto" type="text" list="lista-postos"></div>
                     <div class="linha-campo campo-metade"><label>Especialidade</label><input id="cadEspecialidade" style="text-align: center" list="lista-esp"></div>
