@@ -11,14 +11,14 @@ function renderStep1(r) {
     out.innerHTML += `
         <div class="resultado-card">
             <h3>Dados Encontrados</h3>
-                <strong>COD-ARQV:</strong> ${r.cod || ''} / ${r.arqv || ''}<br>
+                <strong>COD-ARQV:</strong> ${r.cod || ''}<br>
                 <strong>Nome:</strong> ${r.nome || ''}<br>
                 <strong>CPF:</strong> ${formatarCPF(r.cpf) || ''}              <strong>SARAM:</strong> ${r.saram || ''}<br>
                 <strong>RG/Órgão:</strong> ${r.rg || ''} ${r.orgao || ''}<br>
                 <strong>Data Nascimento:</strong> ${r.nascimento || ''} <strong>Naturalidade:</strong> ${r.naturalidade || ''}<br>
                 <strong>Sexo:</strong> ${r.sexo || ''}<br>
                 <strong>Posto/Quadro/Esp:</strong> ${r.posto || ''} ${r.quadro || ''} ${r.especialidade || ''}<br>
-                <strong>OM:</strong> ${r.om || ''}<br>
+                <strong>OM:</strong> ${r.om || ''} <strong> Data de Praça:</strong> ${r.dt_praca || ''} <br>
                 <strong>Email:</strong> ${r.email || ''} <strong>Tipo Sanguineo:</strong> ${r.tp_sang || ''}<br>
                 <strong>Telefone:</strong> ${r.telefone || ''}<br>
                 <strong>Endereço:</strong> ${r.endereco || ''}<br>
@@ -303,7 +303,7 @@ function atualizarFinalidadesSelecionadas() {
 
     // Se chegou aqui, há pelo menos uma finalidade selecionada
     if (btnProximo) btnProximo.disabled = false; // Liberta o botão
-    
+
     selectedFinalidades.forEach(fin => {
         const tag = document.createElement("span");
         tag.style.cssText = `

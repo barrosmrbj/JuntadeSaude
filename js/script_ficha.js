@@ -134,7 +134,7 @@ async function salvarFichaCompleta() {
     // dados básicos trazidos da pesquisa (CURRENT_DATA)
     //dt_insp: new Date().toISOString(),  será substituído no GAS pelo padrão BR
     cod: CURRENT_DATA?.cod || "",
-    arqv: CURRENT_DATA?.arqv || "",
+    dt_praca: CURRENT_DATA?.dt_praca || "",
     rg: CURRENT_DATA?.rg || "",
     orgao: CURRENT_DATA?.orgao || "",
     dt_nascimento: CURRENT_DATA?.nascimento || "",
