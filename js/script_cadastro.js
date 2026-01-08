@@ -40,15 +40,14 @@ window.onload = async () => {
 };
 
 function formatarCPF(cpf) {
-    // 1. Remove qualquer coisa que não seja número
-    // 2. Garante que tenha 11 dígitos (padStart)
-    let v = cpf.toString().replace(/\D/g, "").padStart(11, "0");
-    // 3. Aplica a máscara xxx.xxx.xxx-xx
-    return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  // 1. Remove qualquer coisa que não seja número
+  // 2. Garante que tenha 11 dígitos (padStart)
+  let v = cpf.toString().replace(/\D/g, "").padStart(11, "0");
+  // 3. Aplica a máscara xxx.xxx.xxx-xx
+  return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 }
 
 async function carregarDadosParaEdicao(cpf) {
-
   console.log("Carregando dados para edição do CPF:", cpf);
   const loader = document.getElementById("loader");
   loader.style.display = "flex";
@@ -98,11 +97,14 @@ async function carregarDadosParaEdicao(cpf) {
         if (document.getElementById("cadOM"))
           document.getElementById("cadOM").value = dados.om || "";
         if (document.getElementById("cadDt_praca"))
-          document.getElementById("cadDt_praca").value = dados.dt_praca || "";
+          document.getElementById("cadDt_praca").value = formatarDataParaInput(
+            dados.dt_praca
+          );
         if (document.getElementById("cadQuadro"))
           document.getElementById("cadQuadro").value = dados.quadro || "";
         if (document.getElementById("cadEspecialidade"))
-          document.getElementById("cadEspecialidade").value = dados.especialidade || "";
+          document.getElementById("cadEspecialidade").value =
+            dados.especialidade || "";
         if (document.getElementById("cadGrupo"))
           document.getElementById("cadGrupo").value = dados.grupo || "";
       }, 200);
@@ -123,81 +125,82 @@ async function carregarDadosParaEdicao(cpf) {
 }
 
 async function finalizarAtualizacao() {
-    const loader = document.getElementById("loader");
-    loader.style.display = "flex";
+  const loader = document.getElementById("loader");
+  loader.style.display = "flex";
 
-    // 2. Validação de campos obrigatórios (considerando exceções)
-    if (!validarFormulario()) {
-      alert("Preencha todos os campos obrigatórios (marcados em vermelho).");
-      return;
+  // 2. Validação de campos obrigatórios (considerando exceções)
+  if (!validarFormulario()) {
+    alert("Preencha todos os campos obrigatórios (marcados em vermelho).");
+    return;
+  }
+
+  // 3. Validação final do E-mail
+  const campoEmail = document.getElementById("cadEmail");
+  if (!validarEmail(campoEmail)) {
+    alert("O e-mail informado é inválido.");
+    campoEmail.focus();
+    return;
+  }
+
+  try {
+    // 1. Captura o vínculo selecionado (ajuste a classe se não for .ativo)
+    const btnAtivo = document.querySelector("#btnVinculo button.ativo");
+    const vinculoSelecionado = btnAtivo ? btnAtivo.getAttribute("data-v") : "";
+
+    // 2. Monta o objeto com as IDs do seu Cadastro.html
+    const dados = {
+      cod: document.getElementById("cadCod").value || "", // Mantém o código original
+      cpf: document.getElementById("cadCPF").value, // Key principal
+      nome: document.getElementById("cadNome").value.toUpperCase(),
+      rg: document.getElementById("cadRG").value,
+      orgao: document.getElementById("cadORGAO").value.toUpperCase(),
+      nascimento: document.getElementById("cadDtNascimento").value, // YYYY-MM-DD
+      naturalidade: document.getElementById("cadNaturalidade").value,
+      sexo: document.getElementById("cadSexo").value,
+      email: document.getElementById("cadEmail").value.toLowerCase(),
+      telefone: document.getElementById("cadTelefone").value,
+      tp_sang: document.getElementById("cadTpSang").value,
+      cor: document.getElementById("cadCor").value,
+      nacionalidade: document.getElementById("cadNacionalidade").value,
+      endereco: document.getElementById("cadEndereco")?.value || "",
+      vinculo: vinculoSelecionado,
+      // Campos Militares/Específicos
+      grupo: document.getElementById("cadGrupo")?.value || "",
+      saram: document.getElementById("cadSaram")?.value || "",
+      posto: document.getElementById("cadPosto")?.value || "",
+      om: document.getElementById("cadOM")?.value || "",
+      dt_praca: document.getElementById("cadDt_praca")?.value || "",
+      quadro: document.getElementById("cadQuadro")?.value || "",
+      senha: document.getElementById("cadCPF").value.substring(0, 4), // Mantém a senha inicial
+      especialidade: document.getElementById("cadEspecialidade")?.value || "",
+    };
+
+    // 3. Envio para o GAS
+    const params = new URLSearchParams({
+      action: "atualizarCadastroNoBanco",
+      dados: JSON.stringify(dados),
+    });
+
+    const resp = await fetch(`${API_URL_GAS}?${params.toString()}`);
+    const textResponse = await resp.text();
+    const res = JSON.parse(textResponse);
+
+    if (res.success) {
+      alert(`✅ Atualizado com Sucesso!\nCódigo: ${res.cod}`);
+
+      // O segredo está em passar o CPF na URL para a Fichas.html saber quem carregar
+      window.location.href = `./Fichas.html?cpf=${
+        dados.cpf
+      }&refresh=${Date.now()}`;
+    } else {
+      alert("❌ Erro ao atualizar: " + res.message);
     }
-
-    // 3. Validação final do E-mail
-    const campoEmail = document.getElementById("cadEmail");
-    if (!validarEmail(campoEmail)) {
-      alert("O e-mail informado é inválido.");
-      campoEmail.focus();
-      return;
-    }
-
-    try {
-        // 1. Captura o vínculo selecionado (ajuste a classe se não for .ativo)
-        const btnAtivo = document.querySelector("#btnVinculo button.ativo");
-        const vinculoSelecionado = btnAtivo ? btnAtivo.getAttribute("data-v") : "";
-
-        // 2. Monta o objeto com as IDs do seu Cadastro.html
-        const dados = {
-            cod: document.getElementById("cadCod").value || "", // Mantém o código original
-            cpf: document.getElementById("cadCPF").value, // Key principal
-            nome: document.getElementById("cadNome").value.toUpperCase(),
-            rg: document.getElementById("cadRG").value,
-            orgao: document.getElementById("cadORGAO").value.toUpperCase(),
-            nascimento: document.getElementById("cadDtNascimento").value, // YYYY-MM-DD
-            naturalidade: document.getElementById("cadNaturalidade").value,
-            sexo: document.getElementById("cadSexo").value,
-            email: document.getElementById("cadEmail").value.toLowerCase(),
-            telefone: document.getElementById("cadTelefone").value,
-            tp_sang: document.getElementById("cadTpSang").value,
-            cor: document.getElementById("cadCor").value,
-            nacionalidade: document.getElementById("cadNacionalidade").value,
-            endereco: document.getElementById("cadEndereco")?.value || "",
-            vinculo: vinculoSelecionado,
-            // Campos Militares/Específicos
-            grupo: document.getElementById("cadGrupo")?.value || "",
-            saram: document.getElementById("cadSaram")?.value || "",
-            posto: document.getElementById("cadPosto")?.value || "",
-            om: document.getElementById("cadOM")?.value || "",
-            dt_praca: document.getElementById("cadDt_praca")?.value || "",
-            quadro: document.getElementById("cadQuadro")?.value || "",
-            senha: document.getElementById("cadCPF").value.substring(0, 4), // Mantém a senha inicial
-            especialidade: document.getElementById("cadEspecialidade")?.value || ""
-        };
-
-        // 3. Envio para o GAS
-        const params = new URLSearchParams({
-            action: "atualizarCadastroNoBanco",
-            dados: JSON.stringify(dados)
-        });
-
-        const resp = await fetch(`${API_URL_GAS}?${params.toString()}`);
-        const textResponse = await resp.text();
-        const res = JSON.parse(textResponse);
-
-        if (res.success) {
-            alert(`✅ Atualizado com Sucesso!\nCódigo: ${res.cod}`);
-            
-            // O segredo está em passar o CPF na URL para a Fichas.html saber quem carregar
-            window.location.href = `./Fichas.html?cpf=${dados.cpf}&refresh=${Date.now()}`;
-        } else {
-            alert("❌ Erro ao atualizar: " + res.message);
-        }
-
-    } catch (e) {
-        console.error("Erro na atualização:", e);
-        alert("Erro técnico ao salvar. Verifique o console.");
-    } finally {
-        loader.style.display = "none";
-    }
+  } catch (e) {
+    console.error("Erro na atualização:", e);
+    alert("Erro técnico ao salvar. Verifique o console.");
+  } finally {
+    loader.style.display = "none";
+  }
 }
 
 // Função auxiliar para converter DD/MM/YYYY para YYYY-MM-DD (formato do input date)
@@ -249,7 +252,13 @@ function validarEmail(input) {
 
 function validarFormulario() {
   // IDs que NÃO são obrigatórios (mesmo se estiverem visíveis)
-  const excessoes = ["cadCod","cadSaram", "cadEspecialidade", "cadQuadro", "cadORGAO"];
+  const excessoes = [
+    "cadCod",
+    "cadSaram",
+    "cadEspecialidade",
+    "cadQuadro",
+    "cadORGAO",
+  ];
 
   const campos = document.querySelectorAll("input, select");
   let valido = true;
