@@ -163,10 +163,8 @@ async function salvarFichaCompleta() {
     // dados coletados no Wizard
     grupo: document.getElementById("selectGrupo")?.value || "",
     finalidades: Array.from(selectedFinalidades),
-    clinica_restricao:
-      document.getElementById("clinica_restricao")?.value || "",
-    data_inicio_restricao:
-      document.getElementById("data_inicio_restricao")?.value || "",
+    clinica_restricao: document.getElementById("clinica_restricao")?.value || "",
+    data_inicio_restricao: document.getElementById("data_inicio_restricao")?.value || "",
     obs_dis: document.getElementById("descricao_curso")?.value || "",
     obs_cartao: document.getElementById("periodo_curso")?.value || "",
   };
@@ -202,7 +200,7 @@ async function salvarFichaCompleta() {
       // USANDO RETURN PARA GARANTIR QUE O FLUXO PARE AQUI
       return Swal.fire({
         title: "Junta de Saúde",
-        text: "Ficha salva com sucesso! Controle: " + res.controle.join(", "),
+        text: "Ficha salva com sucesso! \n Controle de Ficha: " + res.controle.join(", "),
         icon: "success",
         confirmButtonText: "Ir para o Roteiro",
         confirmButtonColor: "#28a745",
