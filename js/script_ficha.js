@@ -209,6 +209,19 @@ async function salvarFichaCompleta() {
 
       // 3. Redireciona para a página do roteiro
       window.location.href = "./Roteiro.html";
+
+      Swal.fire({
+        title: "Junta de Saúde", // O título que você desejar
+        text: "Ficha salva com sucesso! Controle: " + res.controle.join(", "),
+        icon: "success",
+        confirmButtonText: "Ir para o Roteiro",
+        confirmButtonColor: "#28a745",
+      }).then((result) => {
+        // O redirecionamento só acontece depois que o usuário clica no botão
+        if (result.isConfirmed) {
+          window.location.href = "./Roteiro.html";
+        }
+      });
     } else {
       throw new Error(res.message);
     }
