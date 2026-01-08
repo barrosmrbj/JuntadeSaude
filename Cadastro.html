@@ -62,8 +62,8 @@
 
         <div class="row">
           <div class="col-md-6 linha-campo">
-            <label for="cadRG">Identidade</label>
-            <input id="cadRG" type="text">
+            <label for="cadRG">Identidade/RG</label>
+            <input id="cadRG" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="Apenas números">
           </div>
           <div class="col-md-6 linha-campo">
             <label for="cadORGAO">Orgão Emissor</label>
