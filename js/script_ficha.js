@@ -200,17 +200,6 @@ async function salvarFichaCompleta() {
       localStorage.setItem("dadosRoteiro", JSON.stringify(dadosParaRoteiro));
 
       Swal.fire({
-        title: "Confirmação de Envio", // AQUI você define o título que quiser!
-        text: "Ficha salva com sucesso! Controle: " + res.controle.join(", "),
-        icon: "success", // Mostra um ícone de "check" verde animado
-        confirmButtonText: "OK",
-        confirmButtonColor: "#3085d6",
-      });
-
-      // 3. Redireciona para a página do roteiro
-      window.location.href = "./Roteiro.html";
-
-      Swal.fire({
         title: "Junta de Saúde", // O título que você desejar
         text: "Ficha salva com sucesso! Controle: " + res.controle.join(", "),
         icon: "success",
