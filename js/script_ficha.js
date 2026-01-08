@@ -24,11 +24,15 @@ window.onload = async () => {
     const cpfDaUrl = urlParams.get("cpf");
 
     if (cpfDaUrl) {
-      console.log("Detectado retorno de edição. Atualizando dados do servidor...");
+      console.log(
+        "Detectado retorno de edição. Atualizando dados do servidor..."
+      );
       // BUSCA os dados novos no banco para garantir que a ficha esteja atualizada
-      const response = await fetch(`${API_URL_GAS}?action=buscarCPF&cpf=${cpfDaUrl}`);
+      const response = await fetch(
+        `${API_URL_GAS}?action=buscarCPF&cpf=${cpfDaUrl}`
+      );
       const res = await response.json();
-      
+
       if (res.success && res.data) {
         // ATUALIZA a "mochila" com os dados que acabaram de ser salvos no banco
         sessionStorage.setItem("dadosInspecionando", JSON.stringify(res.data));
@@ -90,11 +94,11 @@ window.onload = async () => {
 };
 
 function formatarCPF(cpf) {
-    // 1. Remove qualquer coisa que não seja número
-    // 2. Garante que tenha 11 dígitos (padStart)
-    let v = cpf.toString().replace(/\D/g, "").padStart(11, "0");
-    // 3. Aplica a máscara xxx.xxx.xxx-xx
-    return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  // 1. Remove qualquer coisa que não seja número
+  // 2. Garante que tenha 11 dígitos (padStart)
+  let v = cpf.toString().replace(/\D/g, "").padStart(11, "0");
+  // 3. Aplica a máscara xxx.xxx.xxx-xx
+  return v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
 }
 
 async function carregarListasParaFicha() {
@@ -195,9 +199,14 @@ async function salvarFichaCompleta() {
       // 2. Salva no navegador (Persistência)
       localStorage.setItem("dadosRoteiro", JSON.stringify(dadosParaRoteiro));
 
-      alert(
-        "✅ Ficha salva com sucesso!\nControle(s): " + res.controle.join(", ")
-      );
+      Swal.fire({
+        title: "Confirmação de Envio", // AQUI você define o título que quiser!
+        text: "Ficha salva com sucesso! Controle: " + res.controle.join(", "),
+        icon: "success", // Mostra um ícone de "check" verde animado
+        confirmButtonText: "OK",
+        confirmButtonColor: "#3085d6",
+      });
+
       // 3. Redireciona para a página do roteiro
       window.location.href = "./Roteiro.html";
     } else {
@@ -230,7 +239,7 @@ function cancelarEReiniciar() {
 
 // Para a tela de edição (Cadastro.html) levando o CPF
 function EditarInspecionando() {
-  const cpf = CURRENT_DATA.cpf.toString().replace(/\D/g, "");;
+  const cpf = CURRENT_DATA.cpf.toString().replace(/\D/g, "");
   // Normaliza o CPF: remove pontos, traços e espaços, deixando apenas números
   window.location.href = `./Cadastro.html?cpf=${cpf}&modo=edicao`;
 }
