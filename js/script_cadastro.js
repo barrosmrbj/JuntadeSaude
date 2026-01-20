@@ -1,7 +1,8 @@
 const API_URL_INSP =
   "https://docs.google.com/spreadsheets/d/11IgiIAjSwYfK-F_rQrVqXhmI83ACaQbjRFwG2wiADtU/"; //banco inspecionandos
 const API_URL_GAS =
-  "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
+  "https://script.google.com/macros/s/AKfycbyJ8o423Mi_JoLq2z6LqvV1H-2DycjywLzCfGz3PPl4Mw4DQkKw0kenYnhi47wVbk4N/exec";
+  
 let vinculoSelecionado = "";
 
 window.onload = async () => {
@@ -53,7 +54,7 @@ async function carregarDadosParaEdicao(cpf) {
   loader.style.display = "flex";
 
   try {
-    const resp = await fetch(`${API_URL_GAS}?action=buscarCPF&cpf=${cpf}`);
+    const resp = await fetch(`${API_URL_GAS}?action=buscarCPF&cpf=${encodeURIComponent(cpf)}`);
     const resJSON = await resp.json(); // Renomeei para resJSON para não confundir
     console.log("Dados recebidos para edição:", resJSON);
 
@@ -126,21 +127,23 @@ async function carregarDadosParaEdicao(cpf) {
 
 async function finalizarAtualizacao() {
   const loader = document.getElementById("loader");
-  loader.style.display = "flex";
 
-  // 2. Validação de campos obrigatórios (considerando exceções)
+  // 1. Validação de campos obrigatórios (considerando exceções)
   if (!validarFormulario()) {
     alert("Preencha todos os campos obrigatórios (marcados em vermelho).");
     return;
   }
 
-  // 3. Validação final do E-mail
+  // 2. Validação final do E-mail
   const campoEmail = document.getElementById("cadEmail");
   if (!validarEmail(campoEmail)) {
     alert("O e-mail informado é inválido.");
     campoEmail.focus();
     return;
   }
+
+  // 3. Ativa o loader após validações
+  loader.style.display = "flex";
 
   try {
     // 1. Captura o vínculo selecionado (ajuste a classe se não for .ativo)
@@ -186,12 +189,10 @@ async function finalizarAtualizacao() {
     const res = JSON.parse(textResponse);
 
     if (res.success) {
-      alert(`✅ Atualizado com Sucesso!\nCódigo: ${res.cod}`);
+      alert(`✅ Cadastro Atualizado com Sucesso!\n\nCódigo: ${res.cod}\nNome: ${res.nome}`);
 
-      // O segredo está em passar o CPF na URL para a Fichas.html saber quem carregar
-      window.location.href = `./Fichas.html?cpf=${
-        dados.cpf
-      }&refresh=${Date.now()}`;
+      // Redireciona para Fichas.html com o CPF atualizado
+      window.location.href = `./Fichas.html?cpf=${encodeURIComponent(res.cpf)}&refresh=${Date.now()}`;
     } else {
       alert("❌ Erro ao atualizar: " + res.message);
     }
@@ -420,12 +421,12 @@ async function salvar() {
 
     if (res.success) {
       alert(
-        `Cadastro realizado com sucesso!\nID: ${res.id}\n\nAgora você será redirecionado para iniciar seu atendimento.`
+        `✅ Cadastro realizado com sucesso!\n\nCódigo: ${res.cod}\nNome: ${res.nome}\n\nAgora você será redirecionado para iniciar seu atendimento.`
       );
-      // Padrão GitHub Pages com ponto
-      window.location.href = `index.html?cpf=${payload.cpf}&status=cadastrado`;
+      // Volta para index preenchendo o CPF
+      window.location.href = `index.html?cpf=${encodeURIComponent(res.cpf)}&status=cadastrado`;
     } else {
-      alert("Erro ao salvar: " + res.message);
+      alert("❌ Erro ao salvar: " + res.message);
     }
   } catch (err) {
     console.error("Erro no fetch:", err);

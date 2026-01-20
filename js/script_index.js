@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyJ8o423Mi_JoLq2z6LqvV1H-2DycjywLzCfGz3PPl4Mw4DQkKw0kenYnhi47wVbk4N/exec";
 
 // No window.onload do INDEX.HTML
 window.onload = () => {

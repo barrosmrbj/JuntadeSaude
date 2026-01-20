@@ -1,9 +1,13 @@
 /* =====================================================================
    CONFIGURAÇÕES GERAIS (Antigo config.js)
    ===================================================================== */
-// URL Gerada no Google Apps Script (Implantar > Gerenciar Implantações)
+// URL do GAS para Cadastro/Inspecionandos
 const API_URL_GAS =
-  "https://script.google.com/macros/s/AKfycbwFsMusddUIVVxtD7xC3GuSQlq4Q0njnC0JjEJeiAgvnxxk5IJJNzC3zV2eITOXr_Ne5Q/exec";
+  "https://script.google.com/macros/s/AKfycbyJ8o423Mi_JoLq2z6LqvV1H-2DycjywLzCfGz3PPl4Mw4DQkKw0kenYnhi47wVbk4N/exec";
+
+// URL do GAS para Fichas de Inspeção (planilha separada)
+const API_URL_FICHAS =
+  "https://script.google.com/macros/s/AKfycbwAifsFgH0aQPqSJNq2tfgEwD5IZtsRYLQ2dCRmQT4gipHyo3AnBNnqmar4oL4kJpyt5Q/exec";
 
 /* =====================================================================
    VARIÁVEIS DE ESTADO DO WIZARD
@@ -107,20 +111,27 @@ async function carregarListasParaFicha() {
     const response = await fetch(`${API_URL_GAS}?action=getDadosIniciais`);
     const res = await response.json();
 
+    console.log("📋 Resposta getDadosIniciais:", res);
+
     if (res.success) {
       // CRIAMOS O OBJETO APP QUE SUAS FUNÇÕES PRECISAM
       window.APP = {
         GRUPOS_LIST: res.grupos || [],
-        FINALIDADES_LIST: res.finalidades || [], // Garanta que o GAS retorne 'finalidades'
+        FINALIDADES_LIST: res.finalidades || [],
       };
+
+      //console.log("📋 GRUPOS_LIST:", window.APP.GRUPOS_LIST);
+      //console.log("📋 FINALIDADES_LIST:", window.APP.FINALIDADES_LIST);
 
       // AGORA chamamos suas funções de renderização
       renderGroupOptions();
       renderFinalidadesOptions();
-      //console.log("✅ Listas carregadas e renders chamados.");
+      console.log("✅ Listas carregadas e renders chamados.");
+    } else {
+      console.error("❌ getDadosIniciais retornou success=false:", res.message);
     }
   } catch (err) {
-    console.error("Erro ao carregar listas:", err);
+    console.error("❌ Erro ao carregar listas:", err);
   }
 }
 
@@ -177,7 +188,7 @@ async function salvarFichaCompleta() {
       dados: JSON.stringify(dadosFicha),
     });
 
-    const response = await fetch(`${API_URL_GAS}?${params.toString()}`, {
+    const response = await fetch(`${API_URL_FICHAS}?${params.toString()}`, {
       method: "GET", // O doGet do seu GAS processará isso perfeitamente
     });
 
